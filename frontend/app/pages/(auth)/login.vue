@@ -10,7 +10,6 @@
       name="email"
       :ui="{ label: 'text-lg' }"
     >
-      <CommonPopper>
         <UInput
           v-model="logInPayloadState.email"
           class="w-full"
@@ -19,10 +18,6 @@
           :ui="{ base: 'bg-gray-100 h-10 text-black' }"
           autocomplete="email"
         />
-        <template #content>
-          <p>Sinh viên sử dụng mail Mã_Sinh_Viên@ms.hanu.edu.vn</p>
-        </template>
-      </CommonPopper>
     </UFormField>
     <UFormField
       label="Mật Khẩu"
@@ -78,12 +73,6 @@
         class="text-info-500 hover:text-muted"
       >Đăng Ký</NuxtLink>
     </p>
-
-      <!-- REMOVE LATER -->
-   <UButton label="CHEAT BUTTON" @click="() => {
-    accessToken = 'dsajidoas'
-    navigateTo('/dashboard/me ')}" />
-    {{ accessToken }}
   </UForm>
 
 </template>
@@ -106,7 +95,7 @@ const schema = z.object({
   userPassword: z.string().min(1, 'Vui lòng nhập mật khẩu!')
 })
 
-const { accessToken, logIn } = useAuth()
+const { logIn } = useAuth()
 
 const handleLogIn = async () => {
   isLoading.value = true

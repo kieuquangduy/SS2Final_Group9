@@ -5,13 +5,8 @@
       Đăng Ký
     </p>
     <UFormField label="Email" name="email" :ui="{ label: 'text-lg' }">
-      <CommonPopper>
         <UInput v-model="registerPayloadState.email" class="w-full" color="neutral" placeholder="Nhập email..."
           :ui="{ base: 'bg-gray-100 h-10 text-black' }" autocomplete="email" />
-        <template #content>
-          <p>Sinh viên sử dụng mail Mã_Sinh_Viên@ms.hanu.edu.vn</p>
-        </template>
-      </CommonPopper>
     </UFormField>
     <UFormField class="group" label="Mật Khẩu" name="userPassword" :ui="{ label: 'text-lg' }">
       <CommonPopper>
@@ -66,7 +61,7 @@ const isLoading = ref<boolean>(false)
 
 const schema =
   z.object({
-    email: z.email('Email không hợp lệ!').endsWith('@ms.hanu.edu.vn', { message: 'Sinh viên sử dụng mail Mã_Sinh_Viên@ms.hanu.edu.vn' }),
+    email: z.email('Email không hợp lệ!'),
     userPassword: z.string().min(8, 'Mật khẩu phải có ít nhất 8 kí tự!'),
     confirmPassword: z.string()
   })
