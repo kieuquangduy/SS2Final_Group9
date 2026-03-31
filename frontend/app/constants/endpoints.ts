@@ -1,4 +1,4 @@
-const BASE_URL = 'https://receptive-mundanely-emma.ngrok-free.dev'
+const BASE_URL = 'http://localhost:8080'
 
 export const LogInEndpoint = `${BASE_URL}/user/auth/login`
 export const LogOutEndpoint = `${BASE_URL}/user/auth/log_out`

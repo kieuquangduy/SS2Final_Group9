@@ -73,12 +73,21 @@
         class="text-info-500 hover:text-muted"
       >Đăng Ký</NuxtLink>
     </p>
+
+    <!--DELETE LATER-->
+    <UButton
+class="absolute bottom-0 left-0 bg-red-500 size-2" @click="() => {
+      accessToken = 'TEMPTEMPTEMP'
+      navigateTo('/')
+}" />
   </UForm>
 
 </template>
 <script setup lang="ts">
 import type { LogInPayload } from '~/types/auth';
 import { z } from 'zod';
+
+const { accessToken } = useAuth()
 
 definePageMeta({
   layout: 'auth',

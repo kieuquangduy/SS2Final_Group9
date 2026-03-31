@@ -8,6 +8,14 @@ export default defineNuxtConfig({
   ],
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
+  app: {
+    head: {
+      title: 'ScholarHub',
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico', id: 'favicon' }
+      ]
+    }
+  },
   compatibilityDate: '2025-07-15',
   eslint: {
     config: {
