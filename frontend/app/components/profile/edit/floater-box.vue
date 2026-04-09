@@ -24,10 +24,10 @@
       </div>
       <div class="flex flex-col items-center">
         <h3 class="text-2xl font-bold text-center lg:text-start">
-          Nguyễn Văn A
+          {{ fullName }}
         </h3>
         <p class="text-dimmed">
-          MSV: 2301140037
+          MSV: {{ studentId }}
         </p>
         <UBadge
           label="Sinh Viên"
@@ -41,4 +41,14 @@
 
 <script setup lang="ts">
 const PROFILEIMAGE = '/ProfileUserImageTemp.jpg'
+
+withDefaults(defineProps<{
+  fullName?: string,
+  studentId?: string
+}>(),
+{
+  fullName: 'Pending...',
+  studentId: 'Pending...'
+}
+)
 </script>

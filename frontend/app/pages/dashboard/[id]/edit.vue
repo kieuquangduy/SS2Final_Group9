@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col lg:flex-row-reverse gap-x-10 gap-y-10 h-full">
-    <ProfileEditFloaterBox class="w-full lg:w-80 lg:sticky shrink-0 top-16 self-start" />
+    <ProfileEditFloaterBox class="w-full lg:w-80 lg:sticky shrink-0 top-16 self-start" :full-name="profile?.full_name" :student-id="profile?.student_id ?? 'Pending...'" />
 
       <UForm :state="form" class="w-full flex flex-col gap-10" @submit="onSubmit">
         <CommonPageSection title="Thông tin Cá nhân" title-icon="i-heroicons-user-solid">
@@ -76,9 +76,13 @@
 </template>
 
 <script lang="ts" setup>
+import { useFetchProfileDetail } from '~/composables/profile/useFetchProfileDetail'
+
 
 const route = useRoute()
 const { id } = route.params
+
+const { data: profile } = await useFetchProfileDetail(id?.toString())
 
 const uniYearOptions = [
   {
@@ -115,18 +119,18 @@ const genderOptions = [
 ]
 
 const form = reactive({
-  full_name: '',
-  identity_number: '',
-  dob: '',
-  gender: '',
-  ethnicity: '',
-  phone_number: '',
-  residence: '',
-  university: '',
-  student_id: '',
-  university_year: 1,
-  major: '',
-  class: ''
+  full_name: profile.value?.full_name ?? '',
+  identity_number: profile.value?.identity_number ?? '',
+  dob: profile.value?.dob ?? '',
+  gender: profile.value?.gender ?? '',
+  ethnicity: profile.value?.ethnicity ?? '',
+  phone_number: profile.value?.phone_number ?? '',
+  residence: profile.value?.residence ?? '',
+  university: profile.value?.university ?? '',
+  student_id: profile.value?.student_id ?? '',
+  university_year: profile.value?.university_year ?? 1,
+  major: profile.value?.major ?? '',
+  class: profile.value?.class ?? ''
 })
 
 const onSubmit = async () => {
