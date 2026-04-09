@@ -74,20 +74,12 @@
       >Đăng Ký</NuxtLink>
     </p>
 
-    <!--DELETE LATER-->
-    <UButton
-class="absolute bottom-0 left-0 bg-red-500 size-2" @click="() => {
-      accessToken = 'TEMPTEMPTEMP'
-      navigateTo('/')
-}" />
   </UForm>
 
 </template>
 <script setup lang="ts">
 import type { LogInPayload } from '~/types/auth';
 import { z } from 'zod';
-
-const { accessToken } = useAuth()
 
 definePageMeta({
   layout: 'auth',
@@ -108,11 +100,8 @@ const { logIn } = useAuth()
 
 const handleLogIn = async () => {
   isLoading.value = true
-  const data = await logIn(logInPayloadState);
+  await logIn(logInPayloadState);
   isLoading.value = false
-  if (data) {
-    navigateTo('/dashboard/me')
-  }
 }
 
 const passwordShow = ref<boolean>(false)
@@ -123,19 +112,20 @@ const logInPayloadState = reactive<LogInPayload>({
 })
 
 
-const errorKeys : Record<string, {title: string, desc: string}> = {
-    unauthorized : { title: 'Chưa được xác minh!', desc: 'Vui lòng đăng nhập để truy cập.' },
-    invalid_token: { title: 'Token hết hạn!', desc: 'Vui lòng đăng ký lại để nhận token mới.' }
+const statusKeys : Record<string, {title: string, desc: string, color: "success" | "error" }> = {
+    register_success : { title: 'Đăng ký thành công', desc: 'Vui lòng kiểm tra email để xác minh.', color: 'success'},
+    unauthorized : { title: 'Chưa được xác minh!', desc: 'Vui lòng đăng nhập để truy cập.', color: 'error' },
+    invalid_token: { title: 'Token hết hạn!', desc: 'Vui lòng đăng ký lại để nhận token mới.', color: 'error' }
 } 
 
 onMounted(() => {
-  const errorKey = errorKeys[route.query.error as string]
+  const statusKey = statusKeys[route.query.status as string]
 
-  if (route.query.error && errorKey) {
+  if (route.query.status && statusKey) {
     toast.add({
-      title: errorKey.title,
-      description: errorKey.desc,
-      color: 'error'
+      title: statusKey.title,
+      description: statusKey.desc,
+      color: statusKey.color
     })
     router.replace('/login')
   }

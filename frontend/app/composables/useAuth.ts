@@ -1,68 +1,81 @@
-import type { ApiResponse, LogInPayload, LoginResponse, RegisterPayload, ResetPasswordPayload } from "~/types/auth"
-import { LogInEndpoint, LogOutEndpoint, MissingPasswordEndpoint, RegisterEndpoint, ResetPasswordEndpoint, VerifyResetEndpoint } from "~/constants/endpoints";
+import type { LogInPayload, RegisterPayload, ResetPasswordPayload } from "~/types/auth"
 
 export const useAuth = () => {
+
+    const supabase = useSupabaseClient();
+    const user = useSupabaseUser();
     const toast = useToast();
 
-    const accessToken = useState<string | null>(() => null)
+    const siteUrl = useRequestURL().origin
 
     const logIn = async (payload: LogInPayload) => {
-        try {
-            const { message, data } = await $fetch<LoginResponse>(LogInEndpoint, {
-                method: 'POST',
-                body: payload
-            })
+        const { error } = await supabase.auth.signInWithPassword({
+            email: payload.email,
+            password: payload.userPassword
+        })
 
-            toast.add({
-                title: 'Đăng nhập thành công!',
-                description: message
-            })
-            accessToken.value = data.accessToken
-            return data
-
-        } catch {
+        if ( error ) {
             toast.add({
                 title: 'Đăng nhập thất bại!',
-                description: 'Sai email hoặc mật khẩu.',
+                description: error.message,
                 color: 'error'
             })
-            return false
+            return
         }
+
+        if ( !user.value ) {
+            await new Promise<void>((resolve) => {
+                const unwatch = watch(user, (newUser) => {
+                    if (newUser) {
+                        unwatch()
+                        resolve()
+                    }
+                })
+            })
+        }
+
+        toast.add({
+            title: 'Đăng nhập thành công!',
+            color: 'success'
+        })
+        return navigateTo('/dashboard')
+
     }
 
     const logOut = async () => {
-        try {
-            //await $fetch(LogOutEndpoint)
-            accessToken.value = null
-            navigateTo('/login')
-        }
-        catch {
+        const { error } = await supabase.auth.signOut()
+
+        if ( error ) {
             toast.add({
                 title: 'Đăng xuất thất bại!',
-                description: 'Vui lòng thử lại sau.',
+                description: error.message,
                 color: 'error'
             })
+            return
         }
+
+        return navigateTo('/login')
     }
 
     const register = async (payload: RegisterPayload) => {
-        try {
-            const { message, data } = await $fetch<ApiResponse>(RegisterEndpoint, {
-                method: 'POST',
-                body: payload
-            })
+        const { error } = await supabase.auth.signUp({
+            email: payload.email,
+            password: payload.userPassword,
+            options: {
+                emailRedirectTo: `${siteUrl}/auth/callback`
+            }
+        })
 
+        if ( error ) {
             toast.add({
-                title: 'Đăng ký thành công',
-                description: message
-            })
-            return data
-        } catch {
-            toast.add({
-                title: 'Đăng ký thất bại',
+                title: 'Đăng ký thất bại!',
+                description: error.message,
                 color: 'error'
             })
+            return
         }
+
+        return navigateTo('/login?status=register_success')
     }
 
     const missingPassword = async (email: string) => {
@@ -121,5 +134,5 @@ export const useAuth = () => {
     }
 
 
-    return { accessToken, logIn, logOut, register, missingPassword, resetPassword, verifyResetToken }
+    return { logIn, logOut, register, missingPassword, resetPassword, verifyResetToken }
 }

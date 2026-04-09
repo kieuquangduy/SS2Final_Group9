@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col gap-10">
-        <ProfileBanner />
+        <ProfileBanner :name="profile?.full_name" :student-id="profile?.student_id" :id="profile?.uid" />
         <ProfileOverview :sections="OVERVIEWSECTIONS" />
         <div class="flex flex-col lg:grid grid-cols-3 gap-10 lg:gap-4">
             <div class="flex flex-col gap-10 col-span-2">
@@ -51,6 +51,13 @@
     </div>
 </template>
 <script setup lang="ts">
+import { useFetchProfileDetail } from '~/composables/profile/useFetchProfileDetail'
+
+
+const route = useRoute()
+const { id } = route.params
+
+const { data: profile } = await useFetchProfileDetail(id?.toString())
 
 const OVERVIEWSECTIONS = [
     {
@@ -78,23 +85,23 @@ const OVERVIEWSECTIONS = [
 const OVERVIEWINFO = [
     {
         label: 'Mã Sinh viên',
-        desc: '2301140037',
+        desc: profile.value?.student_id,
     },
     {
         label: 'Số Điện thoại',
-        desc: '0123456789',
+        desc: profile.value?.phone_number,
     },
     {
         label: 'Họ và tên',
-        desc: 'Nguyễn Văn A',
+        desc: profile.value?.full_name,
     },
     {
         label: 'Dân tộc',
-        desc: 'Kinh',
+        desc: profile.value?.ethnicity,
     },
     {
         label: 'Ngày sinh',
-        desc: '25/11/2005',
+        desc: profile.value?.dob,
     },
     {
         label: 'Email',
@@ -102,19 +109,19 @@ const OVERVIEWINFO = [
     },
     {
         label: 'Giới tính',
-        desc: 'Nam',
+        desc: profile.value?.gender,
     },
     {
         label: 'Lớp',
-        desc: '22C-2022',
+        desc: profile.value?.class,
     },
     {
         label: 'Khoa',
-        desc: 'Công nghệ Thông tin',
+        desc: profile.value?.major,
     },
     {
         label: 'Địa chỉ',
-        desc: 'Khu 5 - Thanh Lũng - Tiên Phong - Ba Vì - Hà Nội',
+        desc: profile.value?.residence,
     },
     {
         label: 'Chức vụ',

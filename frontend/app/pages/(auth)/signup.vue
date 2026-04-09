@@ -76,10 +76,7 @@ const { register } = useAuth()
 const handleRegister = async () => {
   isLoading.value = true
   const { confirmPassword, ...apiPayload } = registerPayloadState
-  const data = await register(apiPayload)
-  if (data) {
-    navigateTo('/login')
-  }
+  await register(apiPayload)
   isLoading.value = false
 }
 

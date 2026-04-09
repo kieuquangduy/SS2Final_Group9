@@ -26,6 +26,9 @@ color="neutral" class="ml-4 h-full w-50 md:w-70" placeholder="Tìm Kiếm..." ic
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui';
 
+const supabase = useSupabaseClient()
+const { data : { user }} = await supabase.auth.getUser()
+
 
 const { logOut } = useAuth();
 
@@ -44,7 +47,7 @@ const profileActions : DropdownMenuItem[][] = [
     {
         label: 'Thông Tin Cá Nhân',
         icon: 'i-heroicons-user-solid',
-        onSelect: () => navigateTo('/dashboard/me')
+        onSelect: () => navigateTo(`/dashboard/${user?.id}`)
     }
     ],
     [

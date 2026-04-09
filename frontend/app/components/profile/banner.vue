@@ -10,8 +10,8 @@ container-class="rounded-t-none lg:h-30"
                 format="webp" quality="70" />
             <div class="h-8 lg:w-40" />
             <div class="flex flex-col">
-                <h3 class="text-2xl font-bold text-center lg:text-start">Nguyễn Văn A</h3>
-                <p class="text-dimmed">MSV: 2301140037</p>
+                <h3 class="text-2xl font-bold text-center lg:text-start">{{ name }}</h3>
+                <p class="text-dimmed">MSV: {{ studentId }}</p>
                 <UBadge label="Sinh Viên" color="neutral" class="w-max mt-2" />
             </div>
             <div class="lg:ml-auto flex gap-2">
@@ -26,12 +26,18 @@ v-for="(action, id) in PROFILEACTIONS" :key="id" :label="action.label" :color="a
 const PROFILEBANNER = "/ProfileBannerTemp.jpg"
 const PROFILEIMAGE = "/ProfileUserImageTemp.jpg"
 
+const props = defineProps<{
+    name?: string,
+    studentId?: string | null,
+    uid: string | null
+}>()
+
 const PROFILEACTIONS: action_types[] = [
     {
         label: 'Chỉnh sửa Hồ sơ',
         color: 'info',
         variant: 'outline',
-        to: '/dashboard/me/edit'
+        to: `/dashboard/${props.uid}/edit`
     },
     {
         label: 'Chia sẻ',
