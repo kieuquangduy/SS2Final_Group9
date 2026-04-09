@@ -129,7 +129,7 @@ const QUICKACCESS = [
         icon: 'i-heroicons-calendar-solid',
     },
     {
-        label: 'Xem Điểm 5 Tốt',
+        label: 'Xem Điểm Bộ Môn ',
         desc: 'Theo dõi 5 tiêu chí đánh giá',
         icon: 'i-heroicons-chart-bar-solid',
     },

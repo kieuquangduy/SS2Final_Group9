@@ -111,7 +111,7 @@ const handleLogIn = async () => {
   const data = await logIn(logInPayloadState);
   isLoading.value = false
   if (data) {
-    navigateTo('/dashboard')
+    navigateTo('/dashboard/me')
   }
 }
 
