@@ -45,6 +45,8 @@ export const useAuth = () => {
     const logOut = async () => {
         const { error } = await supabase.auth.signOut()
 
+        clearNuxtData((key) => key.startsWith('current-profile-'))
+
         if ( error ) {
             toast.add({
                 title: 'Đăng xuất thất bại!',

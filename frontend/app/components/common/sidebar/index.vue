@@ -7,7 +7,7 @@
                     <NuxtImg :src="icon" format="webp" quality="70" class="rounded-lg w-full max-w-30 mt-4 mx-auto" preload />
                 </div>
                 <div class="flex flex-col gap-2">
-                    <div v-for="(section, id) in sidebarOptions" :key="id">
+                    <div v-for="(section, id) in authorizedSidebarOptions" :key="id">
                         <UButton
 :leading-icon="section.icon" variant="ghost" color="info"
                             class="w-full cursor-pointer text-white hover:bg-info-400" :to="section.path"
@@ -30,5 +30,16 @@ import { sidebarOptions } from '~/constants/sidebar';
 import { icon } from '~/constants/logos';
 
 const { sidebarOpen, toggleSidebarOpen } = useSidebar()
+
+const { curUser } = await useUser()
+
+const authorizedSidebarOptions = computed(() => {
+  const isAdmin = curUser?.value?.role === 'Admin'
+
+  return sidebarOptions.filter((section) => {
+    if (isAdmin) return true;
+    return !section.admin;
+  })
+})
 
 </script>

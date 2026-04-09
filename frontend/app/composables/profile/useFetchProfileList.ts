@@ -1,17 +1,9 @@
-export const useFetchProfileDetail = async (id?: string ) => {
+export const useFetchProfileList = async () => {
     const toast = useToast()
-    if (!id) {
-        toast.add({
-            title: 'Invalid Params!',
-            description: 'Missing/Incorrect ID Params.',
-            color: 'error'
-        })
-        return { data: ref(null) }
-    }
     const supabase = useSupabaseClient()
 
     const profileDetailKey = computed(() => {
-        return `profileDetail-${id}`
+        return `profileList`
     })
 
     const { data, error } = await useAsyncData(
@@ -19,9 +11,7 @@ export const useFetchProfileDetail = async (id?: string ) => {
         async () => {
             const { data } = await supabase
                 .from('students')
-                .select('*')
-                .eq('uid', id) 
-                .single()
+                .select('uid, full_name, student_id, university, major, class')
             return data
         }
     )

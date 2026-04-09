@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col gap-10">
-        <ProfileBanner :name="profile?.full_name" :student-id="profile?.student_id" :id="profile?.uid" />
+        <ProfileBanner :name="profile?.full_name" :student-id="profile?.student_id" :uid="profile?.uid" />
         <ProfileOverview :sections="OVERVIEWSECTIONS" />
         <div class="flex flex-col lg:grid grid-cols-3 gap-10 lg:gap-4">
             <div class="flex flex-col gap-10 col-span-2">

@@ -6,7 +6,7 @@
         </div>
         <div class="w-full">
             <CommonTopbar />
-            <div class="mt-4 mb-10 mx-2 md:ml-0">
+            <div class="mt-4 mb-10 mx-2 md:ml-0 min-h-screen">
                 <slot />
             </div>
             <CommonFooter />

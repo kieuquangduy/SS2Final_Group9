@@ -7,7 +7,7 @@ export const sidebarOptions = [
     {
         name: 'Quản lý Sinh viên',
         icon: 'i-heroicons-users-solid',
-        path: '/dashboard/students',
+        path: '/dashboard/admin/manage-students',
         admin: true
     }
 ]

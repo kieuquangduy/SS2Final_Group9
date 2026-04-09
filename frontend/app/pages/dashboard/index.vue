@@ -1,10 +1,11 @@
 <template>
     <div class="h-3000">
         heloooo
+        {{ curUser }}
         {{ user }}
     </div>
 </template>
 <script setup lang="ts">
-const supabase = useSupabaseClient()
-const { data : { user }} = await supabase.auth.getUser()
+const { curUser } = await useUser()
+const user = useSupabaseUser()
 </script>

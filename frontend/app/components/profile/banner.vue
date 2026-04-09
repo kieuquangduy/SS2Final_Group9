@@ -29,7 +29,7 @@ const PROFILEIMAGE = "/ProfileUserImageTemp.jpg"
 const props = defineProps<{
     name?: string,
     studentId?: string | null,
-    uid: string | null
+    uid?: string | null
 }>()
 
 const PROFILEACTIONS: action_types[] = [
