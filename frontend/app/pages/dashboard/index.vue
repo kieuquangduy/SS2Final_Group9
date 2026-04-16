@@ -8,5 +8,7 @@
     </div>
 </template>
 <script setup lang="ts">
+import { useUser } from '~/composables/profile/useUser';
+
 const { curUser } = await useUser()
 </script>

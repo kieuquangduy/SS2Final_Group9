@@ -5,6 +5,13 @@ export const sidebarOptions = [
         path: '/dashboard'
     },
     {
+        name: 'Học bổng',
+        icon: 'i-heroicons-academic-cap-solid',
+        path: '/dashboard/scholarships'
+    },
+
+
+    {
         name: 'Quản lý Sinh viên',
         icon: 'i-heroicons-users-solid',
         path: '/dashboard/admin/manage-students',

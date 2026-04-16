@@ -18,11 +18,11 @@
                 <div class="w-full px-4">
                     <NuxtImg :src="icon" format="webp" quality="70" class="rounded-lg w-30 mt-4 mx-auto" preload />
                 </div>
-                <div class="flex flex-col gap-2">
-                    <div v-for="(section, id) in sidebarOptions" :key="id">
+                <div class="flex flex-col gap-2 w-full px-2">
+                    <div v-for="(section, id) in authorizedSidebarOptions" :key="id">
                         <UButton
 :leading-icon="section.icon" variant="ghost" color="info"
-                            class="w-full cursor-pointer text-white hover:bg-info-400" :to="section.path"
+                            class="w-full py-2 cursor-pointer text-white hover:bg-info-400 justify-center" :to="section.path"
                             active-class="bg-info">
                             <p class="text-nowrap overflow-hidden transition-all font-bold">{{ sidebarOpen ? section.name : '' }}
                             </p>
@@ -35,9 +35,8 @@
     </div>
 </template>
 <script setup lang="ts">
-import { sidebarOptions } from '~/constants/sidebar';
 import { icon } from '~/constants/logos'
-const { sidebarOpen, toggleSidebarOpen } = useSidebar();
+const { sidebarOpen, toggleSidebarOpen, authorizedSidebarOptions } = useSidebar();
 
 
 </script>

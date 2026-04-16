@@ -1,16 +1,16 @@
 <template>
     <div>
         <div :class="['h-screen transition-all', sidebarOpen ? 'w-50' : 'w-20']" />
-        <div :class="['fixed h-screen top-0 left-0 p-2 transition-all', sidebarOpen ? 'w-50' : 'w-20']">
+        <div :class="['fixed h-screen top-0 left-0 p-2 transition-all z-98', sidebarOpen ? 'w-50' : 'w-20']">
             <div class="size-full bg-info-300 flex flex-col gap-6 rounded-lg items-center shadow-xl overflow-hidden">
                 <div class="w-full px-4">
                     <NuxtImg :src="icon" format="webp" quality="70" class="rounded-lg w-full max-w-30 mt-4 mx-auto" preload />
                 </div>
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-2 w-full px-4">
                     <div v-for="(section, id) in authorizedSidebarOptions" :key="id">
                         <UButton
 :leading-icon="section.icon" variant="ghost" color="info"
-                            class="w-full cursor-pointer text-white hover:bg-info-400" :to="section.path"
+                            class="w-full cursor-pointer text-white hover:bg-info-400 justify-center py-2" :to="section.path"
                             active-class="bg-info">
                             <p class="text-nowrap overflow-hidden transition-all font-bold">{{sidebarOpen ? section.name : ''}}</p>
                         </UButton>
@@ -26,20 +26,8 @@ class="group absolute h-full w-2 py-2 right-0 top-0 cursor-pointer"
     </div>
 </template>
 <script setup lang="ts">
-import { sidebarOptions } from '~/constants/sidebar';
 import { icon } from '~/constants/logos';
 
-const { sidebarOpen, toggleSidebarOpen } = useSidebar()
-
-const { curUser } = await useUser()
-
-const authorizedSidebarOptions = computed(() => {
-  const isAdmin = curUser?.value?.role === 'Admin'
-
-  return sidebarOptions.filter((section) => {
-    if (isAdmin) return true;
-    return !section.admin;
-  })
-})
+const { sidebarOpen, toggleSidebarOpen, authorizedSidebarOptions } = useSidebar()
 
 </script>

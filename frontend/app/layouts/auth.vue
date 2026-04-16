@@ -5,7 +5,7 @@
         <slot />
       </div>
       <div class="size-full">
-        <NuxtImg :src="banner" class="object-cover size-full" format="webp" quality="100" alt="banner" />
+        <NuxtImg :src="banner" class="object-cover size-full" format="webp" alt="banner" />
       </div>
     </div>
     <div class="flex md:hidden justify-center items-center h-screen">

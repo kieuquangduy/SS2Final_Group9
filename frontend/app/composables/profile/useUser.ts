@@ -4,7 +4,7 @@ export const useUser = async () => {
 
   if (!user) return { curUser: ref(null) }
 
-  const userKey = computed(() => {return`current-profile-${user.value?.sub}`})
+  const userKey = computed(() => {return 'userDetail'})
 
   const { data: curUser } = await useAsyncData(
     userKey,

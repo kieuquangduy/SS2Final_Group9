@@ -14,6 +14,95 @@ export type Database = {
   }
   public: {
     Tables: {
+      applications: {
+        Row: {
+          created_at: string
+          essay: Json | null
+          extra_curricular: Json | null
+          family_backgr_info: Json | null
+          id: string
+          scholarship_id: string | null
+          status: string | null
+          study_info: Json | null
+          submitted_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at: string
+          essay?: Json | null
+          extra_curricular?: Json | null
+          family_backgr_info?: Json | null
+          id?: string
+          scholarship_id?: string | null
+          status?: string | null
+          study_info?: Json | null
+          submitted_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          essay?: Json | null
+          extra_curricular?: Json | null
+          family_backgr_info?: Json | null
+          id?: string
+          scholarship_id?: string | null
+          status?: string | null
+          study_info?: Json | null
+          submitted_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applications_scholarship_id_fkey"
+            columns: ["scholarship_id"]
+            isOneToOne: false
+            referencedRelation: "scholarship"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["uid"]
+          },
+        ]
+      }
+      documents: {
+        Row: {
+          application_id: string | null
+          created_at: string
+          description: string | null
+          file_name: string | null
+          file_url: string | null
+          id: string
+        }
+        Insert: {
+          application_id?: string | null
+          created_at?: string
+          description?: string | null
+          file_name?: string | null
+          file_url?: string | null
+          id?: string
+        }
+        Update: {
+          application_id?: string | null
+          created_at?: string
+          description?: string | null
+          file_name?: string | null
+          file_url?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           id: string
@@ -32,6 +121,36 @@ export type Database = {
         }
         Relationships: []
       }
+      scholarship: {
+        Row: {
+          banner: string | null
+          created_at: string
+          deadline: string
+          description: string
+          icon: string | null
+          id: string
+          title: string
+        }
+        Insert: {
+          banner?: string | null
+          created_at?: string
+          deadline: string
+          description: string
+          icon?: string | null
+          id?: string
+          title: string
+        }
+        Update: {
+          banner?: string | null
+          created_at?: string
+          deadline?: string
+          description?: string
+          icon?: string | null
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
       students: {
         Row: {
           class: string | null
@@ -39,6 +158,8 @@ export type Database = {
           ethnicity: string | null
           full_name: string
           gender: string
+          guardian_full_name: string | null
+          guardian_phone_number: string | null
           identity_number: string
           major: string | null
           phone_number: string | null
@@ -54,6 +175,8 @@ export type Database = {
           ethnicity?: string | null
           full_name?: string
           gender?: string
+          guardian_full_name?: string | null
+          guardian_phone_number?: string | null
           identity_number?: string
           major?: string | null
           phone_number?: string | null
@@ -69,6 +192,8 @@ export type Database = {
           ethnicity?: string | null
           full_name?: string
           gender?: string
+          guardian_full_name?: string | null
+          guardian_phone_number?: string | null
           identity_number?: string
           major?: string | null
           phone_number?: string | null
