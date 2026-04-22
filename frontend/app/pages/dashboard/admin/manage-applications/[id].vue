@@ -11,7 +11,8 @@
 
                 <template #actions-cell="{ row }">
                     <div class="flex justify-end">
-                        <UButton icon="i-heroicons-eye" color="info" label="Select" class="cursor-pointer" @click="() => { 
+                        <UButton
+icon="i-heroicons-eye" color="info" label="Select" class="cursor-pointer" @click="() => { 
                             curRow = row.original
                             isOpen = true
                          }" />

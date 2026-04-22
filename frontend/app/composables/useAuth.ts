@@ -64,7 +64,10 @@ export const useAuth = () => {
             email: payload.email,
             password: payload.userPassword,
             options: {
-                emailRedirectTo: `${siteUrl}/auth/callback`
+                emailRedirectTo: `${siteUrl}/auth/callback`,
+                data: {
+                    role: 'STUDENT'
+                }
             }
         })
 

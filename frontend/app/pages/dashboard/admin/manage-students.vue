@@ -7,7 +7,8 @@
 
             <template #actions-cell="{ row }">
                 <div class="flex justify-end">
-                    <UButton icon="i-heroicons-eye" size="sm" color="info"
+                    <UButton
+icon="i-heroicons-eye" size="sm" color="info"
                         @click="handleViewStudent(row.original.uid)">
                         View
                     </UButton>

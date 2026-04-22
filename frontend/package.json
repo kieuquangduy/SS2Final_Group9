@@ -1,5 +1,5 @@
 {
-  "name": "SS2Final",
+  "name": "ScholarHub",
   "type": "module",
   "private": true,
   "scripts": {
@@ -8,7 +8,9 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "type": "supabase gen types typescript --project-id snlmgtfxzbdfqdikutqn > app/types/database.types.ts"
+    "type": "supabase gen types typescript --project-id snlmgtfxzbdfqdikutqn > app/types/database.types.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@nuxt/eslint": "^1.13.0",

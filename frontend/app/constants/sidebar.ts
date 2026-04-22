@@ -23,4 +23,10 @@ export const sidebarOptions = [
         path: '/dashboard/admin/manage-applications',
         admin: true
     },
+    {
+        name: 'Manage Organizers',
+        icon: 'i-heroicons-clipboard-users-solid',
+        path: '/dashboard/admin/manage-organizers',
+        admin: true
+    },
 ]
