@@ -56,13 +56,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "application_documents_application_id_fkey"
-            columns: ["application_id"]
-            isOneToOne: false
-            referencedRelation: "applications"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "application_documents_requirement_id_fkey"
             columns: ["requirement_id"]
             isOneToOne: false
@@ -114,66 +107,47 @@ export type Database = {
           start_date?: string | null
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "application_extracurriculars_application_id_fkey"
-            columns: ["application_id"]
-            isOneToOne: false
-            referencedRelation: "applications"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       applications: {
         Row: {
-          application_no: string
           created_at: string
-          decision_note: string | null
-          final_decision_at: string | null
-          id: number
-          scholarship_type_id: number
+          id: string
+          scholarship_id: string
           student_id: string
-          submitted_at: string | null
-          tier_id: number
-          updated_at: string
         }
         Insert: {
-          application_no: string
           created_at?: string
-          decision_note?: string | null
-          final_decision_at?: string | null
-          id?: never
-          scholarship_type_id: number
+          id?: string
+          scholarship_id: string
           student_id: string
-          submitted_at?: string | null
-          tier_id: number
-          updated_at?: string
         }
         Update: {
-          application_no?: string
           created_at?: string
-          decision_note?: string | null
-          final_decision_at?: string | null
-          id?: never
-          scholarship_type_id?: number
+          id?: string
+          scholarship_id?: string
           student_id?: string
-          submitted_at?: string | null
-          tier_id?: number
-          updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: "applications_scholarship_type_id_fkey"
-            columns: ["scholarship_type_id"]
+            foreignKeyName: "applications_scholarship_id_fkey"
+            columns: ["scholarship_id"]
             isOneToOne: false
-            referencedRelation: "scholarship_types"
+            referencedRelation: "scholarship_list_view"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "applications_tier_id_fkey"
-            columns: ["tier_id"]
+            foreignKeyName: "applications_scholarship_id_fkey"
+            columns: ["scholarship_id"]
             isOneToOne: false
-            referencedRelation: "scholarship_tiers"
+            referencedRelation: "scholarships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
             referencedColumns: ["id"]
           },
         ]
@@ -332,6 +306,80 @@ export type Database = {
         }
         Relationships: []
       }
+      "scholarship-organizers": {
+        Row: {
+          organizer_id: string
+          scholarship_id: string
+        }
+        Insert: {
+          organizer_id: string
+          scholarship_id: string
+        }
+        Update: {
+          organizer_id?: string
+          scholarship_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scholarship-organizers_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "organizer_list_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scholarship-organizers_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "organizers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scholarship-organizers_scholarship_id_fkey"
+            columns: ["scholarship_id"]
+            isOneToOne: false
+            referencedRelation: "scholarship_list_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scholarship-organizers_scholarship_id_fkey"
+            columns: ["scholarship_id"]
+            isOneToOne: false
+            referencedRelation: "scholarships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scholarships: {
+        Row: {
+          created_at: string
+          deadline: string | null
+          description: string | null
+          icon_url: string | null
+          id: string
+          tier: Database["public"]["Enums"]["scholarship_tier"]
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          tier: Database["public"]["Enums"]["scholarship_tier"]
+          title: string
+        }
+        Update: {
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          tier?: Database["public"]["Enums"]["scholarship_tier"]
+          title?: string
+        }
+        Relationships: []
+      }
       students: {
         Row: {
           dob: string | null
@@ -413,10 +461,10 @@ export type Database = {
       organizer_list_view: {
         Row: {
           avatar_url: string | null
+          created_at: string | null
           email: string | null
           id: string | null
           username: string | null
-          website: string | null
         }
         Relationships: [
           {
@@ -427,6 +475,21 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      scholarship_list_view: {
+        Row: {
+          created_at: string | null
+          deadline: string | null
+          description: string | null
+          icon_url: string | null
+          id: string | null
+          organizers:
+            | Database["public"]["CompositeTypes"]["scholarship_organizers_type"][]
+            | null
+          tier: Database["public"]["Enums"]["scholarship_tier"] | null
+          title: string | null
+        }
+        Relationships: []
       }
     }
     Functions: {
@@ -442,6 +505,11 @@ export type Database = {
       profile_contact_type: {
         type: Database["public"]["Enums"]["profile_contact_enum"] | null
         value: string | null
+      }
+      scholarship_organizers_type: {
+        id: string | null
+        username: string | null
+        avatar_url: string | null
       }
       student_residence_type: {
         province: string | null

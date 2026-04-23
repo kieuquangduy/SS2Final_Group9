@@ -3,14 +3,14 @@ export const useScholarshipList = async () => {
     const supabase = useSupabaseClient()
 
     const scholarshipListKey = computed(() => {
-        return `scholarshipList`
+        return `scholarship-list`
     })
 
     const { data, error } = await useAsyncData(
         scholarshipListKey,
         async () => {
             const { data } = await supabase
-                .from('scholarship')
+                .from('scholarship_list_view')
                 .select('*')
             return data
         }

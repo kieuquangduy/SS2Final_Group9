@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col gap-10">
-        <CommonPageSection title="Manage Organizers" title-icon="i-heroicons-users-solid">
+        <CommonPageSection title="Manage Organizers">
             <div class="flex gap-8">
                 <div class="flex items-center gap-4">
                     <p>Sort by:</p>
@@ -15,7 +15,7 @@
                 The organizer must confirm through the email and change password afterwards</p>
                 <UForm class="flex flex-col gap-6 w-full lg:px-20" :state="createProfilePayloadState"
                     :schema="schema" @submit="handleCreateProfile">
-                    <UFormField label="Name" name="username" :ui="{ label: 'text-lg' }">
+                    <UFormField label="Name" name="username" :ui="{ label: 'text-lg' }" required>
                         <UInput v-model="createProfilePayloadState.username" class="w-full"/>
                     </UFormField>
                     <UFormField label="Email" name="email" :ui="{ label: 'text-lg' }">
