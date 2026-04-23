@@ -8,10 +8,9 @@
             <h2 class="text-2xl text-info font-bold">{{ scholarship.title }}</h2>
             <p class="line-clamp-2">{{ scholarship.description }}</p>
             <UAvatarGroup class="mt-2">
-                <UAvatar src="https://upload.wikimedia.org/wikipedia/commons/c/c2/Hanu_logo.jpg" />
-                <UAvatar
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2d6LXZgvLrFIkRZSs0dO-Krhv9ygyRAnUtg&s" />
-                <UAvatar src="https://github.com/noook.png" />
+                <UTooltip v-for="organizer in scholarship.organizers" :key="organizer.id!" :label="organizer.username">
+                    <UAvatar :src="organizer.avatar_url!"/>
+                </UTooltip>
             </UAvatarGroup>
         </div>
     </NuxtLink>
@@ -19,5 +18,5 @@
 <script lang="ts" setup>
 import type { Tables } from '~/types/database.types';
 
-defineProps<{ scholarship: Tables<"scholarships"> }>()
+defineProps<{ scholarship: Tables<'scholarship_list_view'> }>()
 </script>
