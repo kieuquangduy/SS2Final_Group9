@@ -7,6 +7,7 @@ export const useProfileCreate = async () => {
     const siteUrl = useRequestURL().origin
 
     const createProfile = async (payload: { email: string, username: string, role: Enums<'profile_role'> }) => {
+        isLoading.value = true
         try {
         // Send the request to your secure backend
         await $fetch('/api/profiles/invite', {

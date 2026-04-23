@@ -22,10 +22,8 @@ const handleCallback = async () => {
     const hash = route.hash
 
     if (hash && hash.includes('access_token')) {
-    // 2. Remove the '#' so we can parse it like a standard query string
     const params = new URLSearchParams(hash.substring(1))
     
-    // 3. Extract the exact tokens Supabase needs
     const accessToken = params.get('access_token')
     const refreshToken = params.get('refresh_token')
 
@@ -42,18 +40,12 @@ const handleCallback = async () => {
         return
       }
 
-      // 6. Hard-redirect to your update-password page. 
-      // We use window.location.href instead of navigateTo() to force a 
-      // full page reload, guaranteeing the new auth cookie is recognized by Nuxt.
       return navigateTo('/reset_password')
     }
   } else {
-    // If there is no hash, they shouldn't be on this page.
     return navigateTo('/login')
   }
 }
-
-
 
 onMounted(() => {
     handleCallback()

@@ -33,11 +33,16 @@
                 <template #index-cell="{ row }">
                     <span class="text-gray-500 font-medium">{{ row.index + 1 }}</span>
                 </template>
+                <template #avatar-cell="{ row }">
+                    <div v-if="row.original.avatar_url">
+                        <NuxtImg :src="row.original.avatar_url" class="size-8 rounded-lg" quality="50" format="webp" />
+                    </div>
+                </template>
 
                 <template #actions-cell="{ row }">
-                    <div class="flex justify-end">
-                        <UButton icon="i-heroicons-eye" size="sm" color="info" variant="ghost" @click="() => {}" />
-                    </div>
+                    <UDropdownMenu :items="rowActions(row.original)" class="flex justify-end">
+                        <UButton icon="i-heroicons-bars-3" color="info" variant="ghost" />
+                    </UDropdownMenu>
                 </template>
             </UTable>
         </CommonPageSection>
@@ -68,6 +73,7 @@ const columns: TableColumn<Tables<'organizer_list_view'>>[] = [
         header: '#'
     },
     {
+        id: 'avatar',
         accessorKey: 'avatar_url',
         header: ''
     },
@@ -79,10 +85,21 @@ const columns: TableColumn<Tables<'organizer_list_view'>>[] = [
         accessorKey: 'email',
         header: 'Email'
     },
-
+    {
+        accessorKey: 'created_at',
+        header: 'Register Date'
+    },
     {
         id: 'actions',
         header: ''
+    }
+]
+
+const rowActions = (row: Tables<'organizer_list_view'>) => [
+    {
+        label: 'View',
+        icon: 'i-heroicons-eye-solid',
+        to: `/dashboard/${row.id}`
     }
 ]
 </script>
