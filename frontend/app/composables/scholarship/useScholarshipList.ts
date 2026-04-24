@@ -1,10 +1,15 @@
+import type { Tables } from "~/types/database.types"
+
 export const useScholarshipList = async () => {
     const toast = useToast()
     const supabase = useSupabaseClient()
+    const { data: curUser } = useNuxtData<Tables<"profiles">>('user-detail') 
 
     const scholarshipListKey = computed(() => {
         return `scholarship-list`
     })
+
+    const 
 
     const { data, error } = await useAsyncData(
         scholarshipListKey,

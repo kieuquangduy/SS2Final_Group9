@@ -2,26 +2,7 @@
     <div class="flex flex-col gap-10">
         <CommonPageSection title="Manage Scholarships">
             <UButton class="ml-auto cursor-pointer" leading-icon="i-heroicons-plus-circle-solid"
-                label="Create Scholarship" @click="() => { createScholarshipOpen = true }" />
-            <CommonPageModal v-model:is-open="createScholarshipOpen" title="Scholarship Information" inner-class="flex-col justify-center gap-8">
-                <UForm class="flex flex-col gap-6 w-full lg:px-20" :state="createScholarshipPayloadState"
-                    :schema="schema" @submit="handleCreateProfile">
-                    <UFormField label="Title" name="title" :ui="{ label: 'text-lg' }" required>
-                        <UInput v-model="createScholarshipPayloadState.title" class="w-full"/>
-                    </UFormField>
-                    <UFormField label="Description" name="description" :ui="{ label: 'text-lg' }">
-                        <UTextarea v-model="createScholarshipPayloadState.description" class="w-full"
-                           autoresize />
-                    </UFormField>
-                    <UFormField label="Tier" name="tier" :ui="{ label: 'text-lg' }" required>
-                        <USelect :items="scholarship_tier" v-model="createScholarshipPayloadState.tier" class="w-full"
-                           autoresize />
-                    </UFormField>
-                    <UButton class="cursor-pointer" label="Create Scholarship"
-                        :ui="{ label: ['mx-auto text-lg', isCreating && 'hidden'], leadingIcon: 'mx-auto' }"
-                        :loading="isCreating" type="submit" />
-                </UForm>
-            </CommonPageModal>
+                label="Create Scholarship" to="manage-scholarships/create" />
         </CommonPageSection>
         <CommonPageSection>
             <UTable class="w-full" :data="data!" :columns="columns">
