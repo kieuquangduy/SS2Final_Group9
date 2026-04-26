@@ -63,7 +63,7 @@
           class="col-span-3"
         >
           <UTextarea
-            v-model="formState.fullName"
+            v-model="formState.bio"
             class="w-full"
             autoresize
           />
@@ -150,7 +150,6 @@
         <UFormField
           label="Specific Address"
           name="detail"
-          required
           class="w-full col-span-2"
         >
           <UTextarea
@@ -161,61 +160,36 @@
         </UFormField>
       </CommonPageSection>
 
-      <!-- <CommonPageSection
-        title="Thông tin Liên hệ"
-        title-icon="i-heroicons-phone-solid"
-        inner-class="grid grid-cols-1 md:grid-cols-2 gap-8"
-      >
-        <UFormField
-          label="Số điện thoại"
-          name="phoneNumber"
-          required
-          class="w-full"
-        >
-          <UInput
-            v-model="formState.phoneNumber"
-            class="w-full"
-          />
-        </UFormField>
-        <UFormField
-          label="Email"
-          name="email"
-          required
-          class="w-full"
-        >
-          <UInput
-            v-model="profile!.email"
-            class="w-full"
-            disabled
-          />
-        </UFormField>
-      </CommonPageSection>
       <CommonPageSection
-        title="Thông tin Liên quan"
-        title-icon="i-heroicons-cube-solid"
-        inner-class="grid grid-cols-2 gap-8"
+        title="Contact Information"
+        title-icon="i-heroicons-phone-solid"
+        inner-class="flex flex-col gap-4 w-full"
       >
-        <UFormField
-          label="Chức vụ Đoàn hội"
-          name="organPosition"
-          class="w-full"
+        <div
+          v-for="(info, idx) in formState?.contactInformation"
+          :key="idx"
+          class="flex gap-4 w-full"
         >
-          <UInput
-            v-model="formState.organPosition"
-            class="w-full"
+          <USelect
+            v-model="info.type!"
+            :items="contactTypeOptions"
+            class="w-30"
           />
-        </UFormField>
-        <UFormField
-          label="Đảng viên / Đoàn viên"
-          name="ydMember"
-          class="w-full"
-        >
-          <UInput
-            v-model="formState.ydMember"
-            class="w-full"
+          <UInput v-model="info.value!" class="w-full" />
+          <UButton
+            color="error"
+            leading-icon="i-heroicons-x-mark"
+            class="cursor-pointer"
+            @click="removeContactInfo(idx)"
           />
-        </UFormField>
-      </CommonPageSection> -->
+        </div>
+        <div class="flex w-full justify-center items-center border-2 border-dashed text-dimmed col-span-full cursor-pointer py-2 bg-gray-100" @click="addContactInfo">
+          <UIcon name="i-heroicons-plus" />
+          <p class="pointer-events-none ml-2">Add Contact Info</p>
+        </div>
+        {{ curUser?.contact_info }}
+      </CommonPageSection>
+
       <div class="flex justify-end gap-4">
         <UButton
           color="neutral"
@@ -243,7 +217,7 @@ import { z } from 'zod'
 import type { CalendarDate } from '@internationalized/date'
 import { getLocalTimeZone, parseDate, today } from '@internationalized/date'
 import { useProfileDetail } from '~/composables/profile/useProfileDetail'
-import type { Tables } from '~/types/database.types'
+import type { Enums, Tables } from '~/types/database.types'
 
 const route = useRoute()
 const id = route.params.id as string
@@ -251,6 +225,8 @@ const id = route.params.id as string
 const { provinces } = await useLocation()
 const { data: profile } = await useProfileDetail(id)
 const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
+
+const isLoading = ref<boolean>(false)
 
 const genderOptions = [
   {
@@ -266,8 +242,6 @@ const genderOptions = [
     value: 'OTHER',
   },
 ]
-
-const isLoading = ref<boolean>(false)
 
 const currentDay = today(getLocalTimeZone())
 
@@ -295,9 +269,12 @@ const formState = reactive({
   fieldOfStudy: profile.value?.field_of_study ?? '',
   university: profile.value?.university ?? '',
   class: profile.value?.class ?? '',
+
   province: profile.value?.residence?.province ?? '',
   district: profile.value?.residence?.district ?? '',
   detail: profile.value?.residence?.detail ?? '',
+
+  contactInformation: curUser.value?.contact_info ?? [],
 })
 
 const schema
@@ -325,6 +302,27 @@ const schema
     district: z.string().min(1, 'This field is required!'),
     detail: z.string().min(1, 'This field is required!'),
   })
+
+const contactTypeOptions: { label: string, value: Enums<'profile_contact_enum'> }[] = [
+  {
+    label: 'Phone',
+    value: 'PHONE' as Enums<'profile_contact_enum'>,
+  },
+  {
+    label: 'Email',
+    value: 'EMAIL' as Enums<'profile_contact_enum'>,
+  },
+]
+const addContactInfo = () => {
+  console.log('hello')
+  formState.contactInformation.push({
+    type: 'EMAIL' as Enums<'profile_contact_enum'>,
+    value: '',
+  })
+}
+const removeContactInfo = (idx: number) => {
+  formState.contactInformation.splice(idx, 1)
+}
 
 const onSubmit = async () => {
   console.log('lol')
