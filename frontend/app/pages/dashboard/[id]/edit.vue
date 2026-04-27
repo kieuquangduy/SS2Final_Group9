@@ -15,12 +15,12 @@
       >
         <UFormField
           label="Full Name"
-          name="fullName"
+          name="full_name"
           required
           class="w-full"
         >
           <UInput
-            v-model="formState.fullName"
+            v-model="formState.full_name"
             class="w-full"
           />
         </UFormField>
@@ -77,11 +77,11 @@
       >
         <UFormField
           label="Field of Study"
-          name="fieldOfStudy"
+          name="field_of_study"
           class="w-full"
         >
           <UInput
-            v-model="formState.fieldOfStudy"
+            v-model="formState.field_of_study"
             class="w-full"
           />
         </UFormField>
@@ -108,11 +108,11 @@
         </UFormField>
         <UFormField
           label="Student Code"
-          name="studentCode"
+          name="student_code"
           class="w-full"
         >
           <UInput
-            v-model="formState.studentCode"
+            v-model="formState.student_code"
             class="w-full"
           />
         </UFormField>
@@ -150,6 +150,7 @@
         <UFormField
           label="Specific Address"
           name="detail"
+          required
           class="w-full col-span-2"
         >
           <UTextarea
@@ -158,6 +159,7 @@
             autoresize
           />
         </UFormField>
+        {{ formState.province }}
       </CommonPageSection>
 
       <CommonPageSection
@@ -166,7 +168,7 @@
         inner-class="flex flex-col gap-4 w-full"
       >
         <div
-          v-for="(info, idx) in formState?.contactInformation"
+          v-for="(info, idx) in formState?.contact_info"
           :key="idx"
           class="flex gap-4 w-full"
         >
@@ -175,7 +177,10 @@
             :items="contactTypeOptions"
             class="w-30"
           />
-          <UInput v-model="info.value!" class="w-full" />
+          <UInput
+            v-model="info.value!"
+            class="w-full"
+          />
           <UButton
             color="error"
             leading-icon="i-heroicons-x-mark"
@@ -183,11 +188,15 @@
             @click="removeContactInfo(idx)"
           />
         </div>
-        <div class="flex w-full justify-center items-center border-2 border-dashed text-dimmed col-span-full cursor-pointer py-2 bg-gray-100" @click="addContactInfo">
+        <div
+          class="flex w-full justify-center items-center border-2 border-dashed text-dimmed col-span-full cursor-pointer py-2 bg-gray-100 rounded-lg"
+          @click="addContactInfo"
+        >
           <UIcon name="i-heroicons-plus" />
-          <p class="pointer-events-none ml-2">Add Contact Info</p>
+          <p class="pointer-events-none ml-2">
+            Add Contact Info
+          </p>
         </div>
-        {{ curUser?.contact_info }}
       </CommonPageSection>
 
       <div class="flex justify-end gap-4">
@@ -195,7 +204,7 @@
           color="neutral"
           to="/dashboard/me"
           size="lg"
-          label="Hủy"
+          label="Cancel"
         />
         <UButton
           type="submit"
@@ -203,7 +212,7 @@
           class="cursor-pointer"
           icon="i-heroicons-check"
           size="lg"
-          label="Lưu thông tin"
+          label="Save"
           :loading="isLoading"
           :ui="{ label: ['mx-auto text-lg', isLoading && 'hidden'], leadingIcon: 'mx-auto' }"
         />
@@ -218,6 +227,7 @@ import type { CalendarDate } from '@internationalized/date'
 import { getLocalTimeZone, parseDate, today } from '@internationalized/date'
 import { useProfileDetail } from '~/composables/profile/useProfileDetail'
 import type { Enums, Tables } from '~/types/database.types'
+import { useProfileUpdate } from '~/composables/profile/useProfileUpdate'
 
 const route = useRoute()
 const id = route.params.id as string
@@ -226,7 +236,7 @@ const { provinces } = await useLocation()
 const { data: profile } = await useProfileDetail(id)
 const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
 
-const isLoading = ref<boolean>(false)
+const { isLoading, updateProfile } = await useProfileUpdate()
 
 const genderOptions = [
   {
@@ -260,13 +270,13 @@ const computedDob = computed({
 })
 
 const formState = reactive({
-  fullName: profile.value?.full_name ?? '',
+  full_name: profile.value?.full_name ?? '',
   dob: profile.value?.dob ?? currentDay.toString(),
   gender: profile.value?.gender ?? 'MALE',
   bio: curUser.value?.bio ?? '',
 
-  studentCode: profile.value?.student_code ?? '',
-  fieldOfStudy: profile.value?.field_of_study ?? '',
+  student_code: profile.value?.student_code ?? '',
+  field_of_study: profile.value?.field_of_study ?? '',
   university: profile.value?.university ?? '',
   class: profile.value?.class ?? '',
 
@@ -274,12 +284,12 @@ const formState = reactive({
   district: profile.value?.residence?.district ?? '',
   detail: profile.value?.residence?.detail ?? '',
 
-  contactInformation: curUser.value?.contact_info ?? [],
+  contact_info: curUser.value?.contact_info ?? [],
 })
 
 const schema
   = z.object({
-    fullName: z.string().min(1, 'This field is required!'),
+    full_name: z.string().min(1, 'This field is required!'),
     dob: z.string().min(1, 'This field is required!')
       .refine((dateString) => {
         try {
@@ -315,16 +325,16 @@ const contactTypeOptions: { label: string, value: Enums<'profile_contact_enum'> 
 ]
 const addContactInfo = () => {
   console.log('hello')
-  formState.contactInformation.push({
+  formState.contact_info.push({
     type: 'EMAIL' as Enums<'profile_contact_enum'>,
     value: '',
   })
 }
 const removeContactInfo = (idx: number) => {
-  formState.contactInformation.splice(idx, 1)
+  formState.contact_info.splice(idx, 1)
 }
 
 const onSubmit = async () => {
-  console.log('lol')
+  updateProfile(formState)
 }
 </script>
