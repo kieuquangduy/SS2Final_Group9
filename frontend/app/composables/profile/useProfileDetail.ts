@@ -18,7 +18,7 @@ export const useProfileDetail = async (id?: string) => {
     profileDetailKey,
     async () => {
       const { data } = await supabase
-        .from('students')
+        .from('student_detail_view')
         .select('*')
         .eq('id', id)
         .single()

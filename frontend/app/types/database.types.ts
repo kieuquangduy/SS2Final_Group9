@@ -147,6 +147,13 @@ export type Database = {
             foreignKeyName: "applications_student_id_fkey"
             columns: ["student_id"]
             isOneToOne: false
+            referencedRelation: "student_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
             referencedRelation: "students"
             referencedColumns: ["id"]
           },
@@ -506,6 +513,40 @@ export type Database = {
           title: string | null
         }
         Relationships: []
+      }
+      student_detail_view: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          class: string | null
+          contact_info:
+            | Database["public"]["CompositeTypes"]["profile_contact_type"][]
+            | null
+          created_at: string | null
+          dob: string | null
+          email: string | null
+          field_of_study: string | null
+          full_name: string | null
+          gender: Database["public"]["Enums"]["student_gender"] | null
+          id: string | null
+          is_complete: boolean | null
+          residence:
+            | Database["public"]["CompositeTypes"]["student_residence_type"]
+            | null
+          role: Database["public"]["Enums"]["profile_role"] | null
+          student_code: string | null
+          university: string | null
+          username: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "students_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Functions: {
