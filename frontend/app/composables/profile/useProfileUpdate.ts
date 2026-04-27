@@ -8,7 +8,9 @@ type FormPayload = {
   full_name?: string
   gender?: Enums<'student_gender'>
   dob?: string
-  residence?: { province: string, district: string, detail: string }
+  province: string
+  district: string
+  detail: string
   student_code?: string
   field_of_study?: string
   university?: string
@@ -23,19 +25,19 @@ export const useProfileUpdate = async () => {
   const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
 
   const updateProfile = async (payload: FormPayload) => {
-    console.log(payload.residence?.province)
     isLoading.value = true
+
     const ProfileUpdatePayload = {
       username: payload.username,
       avatar_url: payload.avatar_url,
-      contact_info: payload.contact_info,
+      contact_info: payload.contact_info?.filter(row => row.value && row.value.trim() !== '') || [],
       bio: payload.bio,
     }
     const StudentUpdatePayload = {
       full_name: payload.full_name,
       gender: payload.gender,
       dob: payload.dob,
-      residence: { province: payload.residence!.province, district: payload.residence!.district, detail: payload.residence!.detail },
+      residence: { province: payload.province, district: payload.district, detail: payload.detail },
       student_code: payload.student_code,
       field_of_study: payload.field_of_study,
       university: payload.university,
