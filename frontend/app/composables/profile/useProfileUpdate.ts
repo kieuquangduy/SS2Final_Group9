@@ -17,6 +17,11 @@ type FormPayload = {
   class?: string
 }
 
+type ImagePayload = {
+  isChanged: boolean
+  file: File | null
+}
+
 export const useProfileUpdate = async () => {
   const toast = useToast()
   const supabase = useSupabaseClient()
@@ -24,14 +29,52 @@ export const useProfileUpdate = async () => {
 
   const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
 
-  const updateProfile = async (payload: FormPayload) => {
+  const updateProfile = async (payload: FormPayload, imgPayload: ImagePayload) => {
     isLoading.value = true
 
-    const ProfileUpdatePayload = {
+    let ProfileUpdatePayload = {}
+
+    if (imgPayload.isChanged) {
+      if (!imgPayload.file) {
+        toast.add({
+          title: 'Update Avatar Failure',
+          color: 'error',
+        })
+        return
+      }
+      const fileExt = imgPayload.file.name.split('.').pop()
+      const filePath = `profiles/${curUser.value!.id}/avatar-${curUser.value!.id}.${fileExt}`
+
+      const { error } = await supabase
+        .storage
+        .from('public_images')
+        .upload(filePath, imgPayload.file, {
+          upsert: true,
+        })
+      if (error) {
+        toast.add({
+          title: 'Update Avatar Failure',
+          description: error.message,
+          color: 'error',
+        })
+        return
+      }
+      const { data } = supabase
+        .storage
+        .from('public_images')
+        .getPublicUrl(filePath)
+
+      ProfileUpdatePayload = {
+        avatar_url: `${data.publicUrl}?t=${Date.now()}`,
+      }
+    }
+
+    ProfileUpdatePayload = {
+      ...ProfileUpdatePayload,
       username: payload.username,
-      avatar_url: payload.avatar_url,
       contact_info: payload.contact_info?.filter(row => row.value && row.value.trim() !== '') || [],
       bio: payload.bio,
+      is_complete: true,
     }
     const StudentUpdatePayload = {
       full_name: payload.full_name,
@@ -53,17 +96,13 @@ export const useProfileUpdate = async () => {
       if (profileRes.error) throw profileRes.error.message
       if (studentRes.error) throw studentRes.error.message
 
-      const { error } = await supabase
-        .from('profiles')
-        .update({ is_complete: true })
-        .eq('id', curUser.value!.id)
-
-      if (error) throw error.message
-
       toast.add({
         title: 'Profile Updated',
         color: 'success',
       })
+
+      await refreshNuxtData('user-detail')
+      await refreshNuxtData(`profile-detail-${curUser.value!.id}`)
 
       return navigateTo(`/dashboard/${curUser.value!.id}`)
     }

@@ -1,6 +1,12 @@
 <template>
   <div class="flex flex-col lg:flex-row-reverse gap-10 h-full">
-    <ProfileEditFloaterBox class="w-full lg:w-80 lg:sticky shrink-0 top-16 self-start" />
+    <ProfileEditFloaterBox
+      v-model="imageUpload"
+      class="w-full lg:w-80 lg:sticky shrink-0 top-16 self-start"
+      :role="curUser!.role!"
+      :name="profile?.full_name ?? curUser?.username"
+      :org-avt="profile?.avatar_url!"
+    />
 
     <UForm
       :state="formState"
@@ -334,7 +340,12 @@ const removeContactInfo = (idx: number) => {
   formState.contact_info.splice(idx, 1)
 }
 
+const imageUpload = ref({
+  isChanged: false,
+  file: null as File,
+})
+
 const onSubmit = async () => {
-  updateProfile(formState)
+  updateProfile(formState, imageUpload.value)
 }
 </script>
