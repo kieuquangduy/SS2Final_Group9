@@ -45,33 +45,19 @@
             </div>
           </div>
         </CommonPageSection>
-        <CommonPageSection inner-class="flex-wrap gap-6">
-          <h2 class="text-2xl font-bold w-full text-center">
-            Truy Cập Nhanh
-          </h2>
-          <div class="grid grid-cols-2 lg:grid-cols-3 w-full gap-6">
-            <UButton
-              v-for="action in QUICKACCESS"
-              :key="action.label"
-              variant="ghost"
-              color="info"
-              class="w-full cursor-pointer"
+        <CommonPageSection
+          title="Contact"
+          title-icon="i-heroicons-phone-solid"
+        >
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-2 w-full">
+            <div
+              v-for="(contact, idx) in profile?.contact_info"
+              :key="idx"
+              class="cursor-pointer rounded-lg bg-neutral-100 py-2 text-center"
+              @click="copier(contact.value)"
             >
-              <template #default>
-                <div class="mx-auto">
-                  <UIcon
-                    :name="action.icon"
-                    class="size-6"
-                  />
-                  <h3 class="font-bold text-lg">
-                    {{ action.label }}
-                  </h3>
-                  <p class="text-dimmed">
-                    {{ action.desc }}
-                  </p>
-                </div>
-              </template>
-            </UButton>
+              <p>{{ contact.value }}</p>
+            </div>
           </div>
         </CommonPageSection>
       </div>
@@ -168,39 +154,6 @@ const OVERVIEWINFO = [
   {
     label: 'Class',
     value: profile.value?.class,
-  },
-]
-
-const QUICKACCESS = [
-  {
-    label: 'Lịch Hoạt động',
-    desc: 'Lịch các sự kiện sắp diễn ra',
-    icon: 'i-heroicons-calendar-solid',
-  },
-  {
-    label: 'Xem Điểm Bộ Môn ',
-    desc: 'Theo dõi 5 tiêu chí đánh giá',
-    icon: 'i-heroicons-chart-bar-solid',
-  },
-  {
-    label: 'Đăng ký Hoạt động',
-    desc: 'Đăng ký hoạt động theo cá nhân',
-    icon: 'i-heroicons-trophy-solid',
-  },
-  {
-    label: 'Nộp minh chứng',
-    desc: 'Tải lên tài liệu minh chứng',
-    icon: 'i-heroicons-document-solid',
-  },
-  {
-    label: 'Nhắn tin',
-    desc: 'Liên hệ trực tiếp',
-    icon: 'i-heroicons-chat-bubble-left-solid',
-  },
-  {
-    label: 'Hỗ trợ',
-    desc: 'Yêu cầu tư vấn và giải pháp',
-    icon: 'i-heroicons-lifebuoy-solid',
   },
 ]
 
