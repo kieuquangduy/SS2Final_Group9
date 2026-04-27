@@ -6,12 +6,14 @@
       :student-code="profile?.student_code"
       :uid="profile?.id"
       :avatar-url="profile.avatar_url"
+      role="STUDENT"
     />
     <ProfileBanner
       v-else
       :name="profile?.username"
       :uid="profile?.id"
       :avatar-url="profile?.avatar_url"
+      :role="profile?.role!"
     />
     <ProfileOverview :sections="OVERVIEWSECTIONS" />
     <div class="flex flex-col lg:grid grid-cols-3 gap-10 lg:gap-4">
@@ -29,8 +31,16 @@
               <h3 class="font-bold text-info">
                 {{ info.label }}:
               </h3>
-              <p class="">
+              <p>
                 {{ info.value }}
+              </p>
+            </div>
+            <div class="flex flex-col md:flex-row md:gap-2">
+              <h3 class="font-bold text-info">
+                Residence:
+              </h3>
+              <p>
+                {{ profile?.residence?.detail }}, {{ profile?.residence?.district }}, {{ profile?.residence?.province }}
               </p>
             </div>
           </div>
@@ -67,14 +77,8 @@
       </div>
       <div class="flex flex-col gap-10">
         <CommonPageSection inner-class="bg-info-300 rounded-lg p-10 flex-col text-white gap-2">
-          <h3 class="text-2xl font-bold">
-            Tổng Điểm Xếp Hạng
-          </h3>
-          <h2 class="text-5xl font-bold">
-            465 / 500
-          </h2>
-          <p class="text-lg">
-            Số điểm xuất sắc! Hãy tiếp tục duy trì tiến độ!
+          <p class="text-white text-lg">
+            {{ profile?.bio }}
           </p>
         </CommonPageSection>
         <CommonPageSection

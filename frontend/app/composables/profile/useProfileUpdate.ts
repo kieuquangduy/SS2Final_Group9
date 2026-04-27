@@ -64,6 +64,8 @@ export const useProfileUpdate = async () => {
         title: 'Profile Updated',
         color: 'success',
       })
+
+      return navigateTo(`/dashboard/${curUser.value!.id}`)
     }
     catch (error: unknown) {
       toast.add({

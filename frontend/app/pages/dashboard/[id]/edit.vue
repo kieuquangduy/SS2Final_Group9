@@ -60,6 +60,7 @@
         </UFormField>
         <UFormField
           label="Bio"
+          name="bio"
           class="col-span-3"
         >
           <UTextarea
@@ -201,7 +202,7 @@
       <div class="flex justify-end gap-4">
         <UButton
           color="neutral"
-          to="/dashboard/me"
+          :to="`/dashboard/${curUser!.id}`"
           size="lg"
           label="Cancel"
         />
@@ -289,6 +290,7 @@ const formState = reactive({
 const schema
   = z.object({
     full_name: z.string().min(1, 'This field is required!'),
+    bio: z.string().max(50, 'Max 50 characters!').optional(),
     dob: z.string().min(1, 'This field is required!')
       .refine((dateString) => {
         try {
@@ -323,7 +325,6 @@ const contactTypeOptions: { label: string, value: Enums<'profile_contact_enum'> 
   },
 ]
 const addContactInfo = () => {
-  console.log('hello')
   formState.contact_info.push({
     type: 'EMAIL' as Enums<'profile_contact_enum'>,
     value: '',

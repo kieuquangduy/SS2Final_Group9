@@ -17,18 +17,19 @@
         quality="70"
       />
       <div class="h-8 lg:w-40" />
-      <div class="flex flex-col">
+      <div class="flex flex-col gap-2">
         <h3 class="text-2xl font-bold text-center lg:text-start">
           {{ name }}
         </h3>
-        <p v-if="studentCode" class="text-dimmed">
-          Student Code: {{ studentCode }}
-        </p>
-        <UBadge
-          label="Sinh Viên"
-          color="neutral"
-          class="w-max mt-2"
-        />
+        <div class="flex gap-2 items-center">
+          <ProfileRoleBadge :role="role" />
+          <p
+            v-if="studentCode"
+            class="text-dimmed"
+          >
+            Student Code: {{ studentCode }}
+          </p>
+        </div>
       </div>
       <div class="lg:ml-auto flex gap-2">
         <UButton
@@ -46,6 +47,8 @@
 </template>
 
 <script setup lang="ts">
+import type { Enums } from '~/types/database.types'
+
 const PROFILEBANNER = '/ProfileBannerTemp.jpg'
 
 const props = defineProps<{
@@ -53,17 +56,18 @@ const props = defineProps<{
   uid?: string | null
   studentCode?: string | null
   avatarUrl?: string | null
+  role: Enums<'profile_role'>
 }>()
 
 const PROFILEACTIONS: action_types[] = [
   {
-    label: 'Chỉnh sửa Hồ sơ',
+    label: 'Edit Profile',
     color: 'info',
     variant: 'outline',
     to: `/dashboard/${props.uid}/edit`,
   },
   {
-    label: 'Chia sẻ',
+    label: 'Share',
     color: 'info',
     variant: 'solid',
     onclick: () => { },
