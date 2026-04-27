@@ -27,26 +27,19 @@
         variant="ghost"
       >
         <UUser
-          :avatar="{ src: 'temp' }"
+          :avatar="{ src: curUser?.avatar_url }"
           :ui="{ name: 'text-white', description: 'text-white' }"
         />
       </UButton>
       <template #user-profile>
-        <div>
-          <p class="font-bold">
-            {{ curUser?.username }}
+        <div class="w-50">
+          <p class="font-bold text-lg truncate mb-2">
+            {{ studentProfile?.full_name ?? curUser?.username }}
           </p>
           <div class="flex gap-4">
             <ProfileRoleBadge
-              v-if="curUser?.role"
-              :role="curUser?.role"
+              :role="curUser!.role!"
             />
-            <p
-              v-if="curUser?.role === 'STUDENT'"
-              class="text-dimmed text-sm"
-            >
-              Student Code: 0123456
-            </p>
           </div>
         </div>
       </template>
@@ -56,9 +49,17 @@
 
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
+import { useProfileDetail } from '~/composables/profile/useProfileDetail'
 import { useUser } from '~/composables/profile/useUser'
+import type { Tables } from '~/types/database.types'
 
 const { curUser } = await useUser()
+
+const studentProfile = ref<Tables<'student_detail_view'> | null>()
+if (curUser.value?.role === 'STUDENT') {
+  const { data } = await useProfileDetail(curUser.value.id)
+  studentProfile.value = data.value ?? null
+}
 
 const { logOut } = useAuth()
 
@@ -75,7 +76,7 @@ const profileActions: DropdownMenuItem[][] = [
   ],
   [
     {
-      label: 'Me',
+      label: 'My Profile',
       icon: 'i-heroicons-user-solid',
       onSelect: () => navigateTo(`/dashboard/${curUser.value?.id}`),
     },
