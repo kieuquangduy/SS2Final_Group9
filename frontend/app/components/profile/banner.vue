@@ -40,6 +40,7 @@
           :variant="action.variant"
           :to="action.to"
           class="h-10 cursor-pointer px-6"
+          @click="action.onclick"
         />
       </div>
     </CommonPageSection>
@@ -50,6 +51,8 @@
 import type { Enums } from '~/types/database.types'
 
 const PROFILEBANNER = '/ProfileBannerTemp.jpg'
+
+const url = useRequestURL()
 
 const props = defineProps<{
   name?: string | null
@@ -70,7 +73,7 @@ const PROFILEACTIONS: action_types[] = [
     label: 'Share',
     color: 'info',
     variant: 'solid',
-    onclick: () => { },
+    onclick: () => { copier(url.href, 'Link Copied to Clipboard') },
   },
 ]
 

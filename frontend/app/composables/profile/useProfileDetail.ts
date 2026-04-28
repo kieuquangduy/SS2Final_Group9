@@ -17,17 +17,44 @@ export const useProfileDetail = async (id?: string) => {
   const { data, error } = await useAsyncData(
     profileDetailKey,
     async () => {
-      const { data } = await supabase
-        .from('student_detail_view')
+      const { data: role } = await supabase.from('profiles').select('role').eq('id', id).single()
+      if (role === 'STUDENT') {
+        const { data, error } = await supabase
+          .from('student_detail_view')
+          .select('*')
+          .eq('id', id)
+          .single()
+
+        if (error) throw error
+        return data
+      }
+
+      if (role === 'ORGANIZER') {
+        const { data, error } = await supabase
+          .from('organizer_detail_view')
+          .select('*')
+          .eq('id', id)
+          .single()
+
+        if (error) throw error
+        return data
+      }
+
+      const { data, error } = await supabase
+        .from('profiles')
         .select('*')
         .eq('id', id)
         .single()
+
+      if (error) throw error
       return data
     },
   )
+
   if (error.value) {
     toast.add({
       title: 'Error Fetching Detail!',
+      description: error.value.message,
       color: 'error',
     })
     return { data: ref(null) }

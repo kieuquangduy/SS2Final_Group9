@@ -15,6 +15,7 @@ type FormPayload = {
   field_of_study?: string
   university?: string
   class?: string
+  website?: string
 }
 
 type ImagePayload = {
@@ -86,15 +87,20 @@ export const useProfileUpdate = async () => {
       university: payload.university,
       class: payload.class,
     }
+    const OrganizerUpdatePayload = {
+      website: payload.website,
+    }
 
     try {
-      const [profileRes, studentRes] = await Promise.all([
+      const [profileRes, studentRes, organizerRes] = await Promise.all([
         supabase.from('profiles').update(ProfileUpdatePayload).eq('id', curUser.value!.id),
         supabase.from('students').update(StudentUpdatePayload).eq('id', curUser.value!.id),
+        supabase.from('organizers').update(OrganizerUpdatePayload).eq('id', curUser.value!.id),
       ])
 
       if (profileRes.error) throw profileRes.error.message
       if (studentRes.error) throw studentRes.error.message
+      if (organizerRes.error) throw organizerRes.error.message
 
       toast.add({
         title: 'Profile Updated',

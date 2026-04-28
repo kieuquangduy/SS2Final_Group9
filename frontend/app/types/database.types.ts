@@ -331,6 +331,13 @@ export type Database = {
             foreignKeyName: "scholarship-organizers_organizer_id_fkey"
             columns: ["organizer_id"]
             isOneToOne: false
+            referencedRelation: "organizer_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scholarship-organizers_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
             referencedRelation: "organizer_list_view"
             referencedColumns: ["id"]
           },
@@ -480,6 +487,31 @@ export type Database = {
       }
     }
     Views: {
+      organizer_detail_view: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          contact_info:
+            | Database["public"]["CompositeTypes"]["profile_contact_type"][]
+            | null
+          created_at: string | null
+          email: string | null
+          id: string | null
+          is_complete: boolean | null
+          role: Database["public"]["Enums"]["profile_role"] | null
+          username: string | null
+          website: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organizers_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizer_list_view: {
         Row: {
           avatar_url: string | null
