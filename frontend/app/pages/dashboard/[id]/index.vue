@@ -27,6 +27,7 @@
         {{ profile?.bio }}
       </p>
     </CommonPageSection>
+    {{ profile }}
     <div
       v-if="profile?.role === 'STUDENT'"
       class="flex flex-col lg:grid grid-cols-3 gap-10 lg:gap-4"
@@ -114,7 +115,7 @@
       >
         <div class="flex flex-wrap gap-y-2">
           <div
-            v-for="info in OVERVIEWINFO"
+            v-for="info in ORGANIZEROVERVIEWINFO"
             :key="info.label"
             class="w-1/2 grid grid-cols-1 md:grid-cols-[30%_auto]"
           >
@@ -124,11 +125,6 @@
             <p>
               {{ info.value }}
             </p>
-          </div>
-          <div class="flex flex-col md:flex-row md:gap-2">
-            <h3 class="font-bold text-info">
-              Residence:
-            </h3>
           </div>
         </div>
       </CommonPageSection>

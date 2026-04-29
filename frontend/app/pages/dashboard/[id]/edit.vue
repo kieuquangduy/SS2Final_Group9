@@ -15,6 +15,56 @@
       @submit="onSubmit"
     >
       <CommonPageSection
+        v-if="profile?.role != 'STUDENT'"
+        title="Account Information"
+        title-icon="i-heroicons-user-solid"
+        inner-class="grid grid-cols-2 gap-4"
+      >
+        <UFormField
+          label="Display Name"
+          name="username"
+          required
+          class="w-full"
+        >
+          <UInput
+            v-model="formState.username"
+            class="w-full"
+          />
+        </UFormField>
+        <UFormField
+          label="Bio"
+          name="bio"
+          class="col-span-2"
+        >
+          <UTextarea
+            v-model="formState.bio"
+            class="w-full"
+            autoresize
+          />
+        </UFormField>
+      </CommonPageSection>
+
+      <CommonPageSection
+        v-if="profile?.role === 'ORGANIZER'"
+        title="Business Information"
+        title-icon="i-heroicons-briefcase-solid"
+        inner-class="grid grid-cols-2 gap-4"
+      >
+        <UFormField
+          label="Website"
+          name="website"
+          class="w-full"
+        >
+          <UInput
+            v-model="formState.website"
+            class="w-full"
+          />
+        </UFormField>
+      </CommonPageSection>
+
+
+      <CommonPageSection
+        v-if="profile?.role === 'STUDENT'"
         title="Personal Information"
         title-icon="i-heroicons-user-solid"
         inner-class="grid grid-cols-3 gap-4"
@@ -78,6 +128,7 @@
       </CommonPageSection>
 
       <CommonPageSection
+        v-if="profile?.role === 'STUDENT'"
         title="Student Information"
         title-icon="i-heroicons-book-open-solid"
         inner-class="grid grid-cols-1 lg:grid-cols-2 gap-4"
@@ -126,6 +177,7 @@
       </CommonPageSection>
 
       <CommonPageSection
+        v-if="profile?.role === 'STUDENT'"
         title="Residence Information"
         title-icon="i-heroicons-map-pin-solid"
         inner-class="grid grid-cols-1 lg:grid-cols-2 gap-4"
@@ -276,6 +328,10 @@ const computedDob = computed({
 })
 
 const formState = reactive({
+  username: profile.value?.username ?? '',
+
+  website: profile.value?.website ?? '',
+
   full_name: profile.value?.full_name ?? '',
   dob: profile.value?.dob ?? currentDay.toString(),
   gender: profile.value?.gender ?? 'MALE',
@@ -293,22 +349,25 @@ const formState = reactive({
   contact_info: curUser.value?.contact_info ?? [],
 })
 
-const schema
-  = z.object({
-    full_name: z.string().min(1, 'This field is required!'),
+const schema = computed(() => {
+  const baseSchema = z.object({
     bio: z.string().max(50, 'Max 50 characters!').optional(),
+  })
+
+  if (profile.value?.role !== 'STUDENT') {
+    return baseSchema.extend({
+      username: z.string().min(1, 'This field is required!'),
+    })
+  }
+
+  return baseSchema.extend({
+    full_name: z.string().min(1, 'This field is required!'),
     dob: z.string().min(1, 'This field is required!')
       .refine((dateString) => {
         try {
           const selectedDate = parseDate(dateString)
-          if (selectedDate.compare(currentDay) <= 0) {
-            return true
-          }
-          else {
-            return false
-          }
-        }
-        catch {
+          return selectedDate.compare(currentDay) <= 0
+        } catch {
           return false
         }
       }, {
@@ -319,6 +378,7 @@ const schema
     district: z.string().min(1, 'This field is required!'),
     detail: z.string().min(1, 'This field is required!'),
   })
+})
 
 const contactTypeOptions: { label: string, value: Enums<'profile_contact_enum'> }[] = [
   {
