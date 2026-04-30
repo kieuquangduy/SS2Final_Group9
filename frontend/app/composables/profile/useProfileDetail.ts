@@ -18,7 +18,8 @@ export const useProfileDetail = async (id?: string) => {
     profileDetailKey,
     async () => {
       const { data: role } = await supabase.from('profiles').select('role').eq('id', id).single()
-      if (role === 'STUDENT') {
+      console.log(role)
+      if (role!.role === 'STUDENT') {
         const { data, error } = await supabase
           .from('student_detail_view')
           .select('*')
@@ -29,7 +30,7 @@ export const useProfileDetail = async (id?: string) => {
         return data
       }
 
-      if (role === 'ORGANIZER') {
+      if (role!.role === 'ORGANIZER') {
         const { data, error } = await supabase
           .from('organizer_detail_view')
           .select('*')
@@ -47,6 +48,7 @@ export const useProfileDetail = async (id?: string) => {
         .single()
 
       if (error) throw error
+
       return data
     },
   )
