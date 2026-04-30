@@ -10,6 +10,7 @@
         :to="{ hash: option.hash }"
         :label="option.label"
         size="sm"
+        @click="option.onclick"
       />
     </div>
   </div>
@@ -21,6 +22,7 @@ defineProps<{
   options: {
     label: string
     hash: string
+    onclick?: () => void
   }[]
 }>()
 
