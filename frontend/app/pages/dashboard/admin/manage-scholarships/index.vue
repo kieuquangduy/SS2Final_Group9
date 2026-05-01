@@ -14,7 +14,7 @@
     </CommonPageSection>
     <CommonPageSection>
       <UTable
-        class="w-full"
+        class="overflow-auto w-full"
         :data="route.hash === '#all' ? all! : own!"
         :columns="columns"
       >
@@ -51,7 +51,7 @@
 
 <script lang="ts" setup>
 import type { TableColumn } from '@nuxt/ui'
-import { z } from 'zod'
+import { hash, z } from 'zod'
 import { useScholarshipCreate } from '~/composables/scholarship/useScholarshipCreate'
 import { useScholarshipList } from '~/composables/scholarship/useScholarshipList'
 import { scholarship_tier } from '~/constants/scholarship'
@@ -60,6 +60,7 @@ import type { Enums, Tables } from '~/types/database.types'
 const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
 
 const route = useRoute()
+const router = useRouter()
 
 const { createScholarship, isLoading: isCreating } = await useScholarshipCreate()
 
@@ -130,4 +131,8 @@ const sortOptions = [
     onclick: handleFetchOwn,
   },
 ]
+
+onMounted(() => {
+  router.push({ hash: '#all' })
+})
 </script>
