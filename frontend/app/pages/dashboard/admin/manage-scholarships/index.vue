@@ -1,10 +1,17 @@
 <template>
   <div class="flex flex-col gap-10">
     <CommonPageSection title="Manage Scholarships">
-      <CommonPageToggle
-        label="Sort By"
-        :options="sortOptions"
-      />
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-center">
+        <UInput
+          :model-value="table?.tableApi?.getColumn('title')?.getFilterValue() as string"
+          placeholder="Search Title..."
+          @update:model-value="table?.tableApi?.getColumn('title')?.setFilterValue($event)"
+        />
+        <CommonPageToggle
+          label="Sort By"
+          :options="sortOptions"
+        />
+      </div>
       <UButton
         class="ml-auto cursor-pointer"
         leading-icon="i-heroicons-plus-circle-solid"
@@ -14,6 +21,7 @@
     </CommonPageSection>
     <CommonPageSection>
       <UTable
+        ref="table"
         class="overflow-auto w-full"
         :data="route.hash === '#all' ? all! : own!"
         :columns="columns"
@@ -30,6 +38,19 @@
               format="webp"
             />
           </div>
+        </template>
+
+        <template #created_at-cell="{ row }">
+          <NuxtTime
+            v-if="row.original.created_at"
+            :datetime="row.original.created_at"
+            month="numeric"
+            day="numeric"
+            year="numeric"
+            hour="numeric"
+            minute="numeric"
+            locale="vi-VN"
+          />
         </template>
 
         <template #actions-cell="{ row }">
@@ -51,33 +72,15 @@
 
 <script lang="ts" setup>
 import type { TableColumn } from '@nuxt/ui'
-import { hash, z } from 'zod'
-import { useScholarshipCreate } from '~/composables/scholarship/useScholarshipCreate'
 import { useScholarshipList } from '~/composables/scholarship/useScholarshipList'
-import { scholarship_tier } from '~/constants/scholarship'
-import type { Enums, Tables } from '~/types/database.types'
+import type { Tables } from '~/types/database.types'
 
 const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
 
 const route = useRoute()
 const router = useRouter()
 
-const { createScholarship, isLoading: isCreating } = await useScholarshipCreate()
-
-const createScholarshipOpen = shallowRef<boolean>(false)
-const createScholarshipPayloadState = ref({
-  title: '',
-  description: '',
-  tier: 'VENUE' as Enums<'scholarship_tier'>,
-})
-const schema = z.object({
-  title: z.string().min(1, 'Title is required!'),
-  description: z.string().optional(),
-
-})
-const handleCreateProfile = () => {
-  createScholarship(createScholarshipPayloadState.value)
-}
+const table = useTemplateRef('table')
 
 const { data: all, filteredData: own, listById } = await useScholarshipList(curUser.value!.id, curUser.value!.role!)
 
@@ -97,6 +100,9 @@ const columns: TableColumn<Tables<'scholarship_list_view'>>[] = [
   {
     accessorKey: 'deadline',
     header: 'Deadline',
+    cell: ({ row }) => {
+      return h('p', formatDate(row.getValue('deadline')))
+    },
   },
   {
     accessorKey: 'created_at',
