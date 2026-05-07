@@ -402,7 +402,7 @@ const removeContactInfo = (idx: number) => {
 
 const imageUpload = ref({
   isChanged: false,
-  file: null as File,
+  file: null as File | null,
 })
 
 const onSubmit = async () => {

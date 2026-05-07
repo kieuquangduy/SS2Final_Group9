@@ -25,6 +25,7 @@
           @change="handleFileSelect"
         >
         <button
+          type="button"
           class="w-full h-100 p-0 m-0 absolute inset-0 bg-black/60 rounded-lg z-2 text-white font-bold text-center opacity-20 hover:opacity-100 hover:opacity-100 transition-opacity cursor-pointer"
           @click="openFilePicker"
         >
@@ -139,7 +140,7 @@ const formState = reactive({
   tier: 'VENUE' as Enums<'scholarship_tier'>,
   deadline: currentDay.toString(),
   description: '',
-  banner_img: File as null,
+  banner_img: null as File | null,
 
 })
 
@@ -169,6 +170,9 @@ const handleFileSelect = (event: Event) => {
   const target = event.target as HTMLInputElement
   if (target.files && target.files.length > 0) {
     const selectedFile = target.files[0]
+    if (tempUrl.value) {
+      URL.revokeObjectURL(tempUrl.value)
+    }
     tempUrl.value = URL.createObjectURL(selectedFile)
     formState.banner_img = target.files[0]
   }

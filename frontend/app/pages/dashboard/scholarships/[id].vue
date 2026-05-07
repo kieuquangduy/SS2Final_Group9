@@ -20,7 +20,7 @@
             <p>{{ field.value }}</p>
           </div>
         </div>
-        <ScholarshipDetailForm class="w-40 xl:w-full my-auto" />
+        <ScholarshipDetailForm v-if="curUser?.role === 'STUDENT'" class="w-40 xl:w-full my-auto" />
       </CommonPageSection>
       <CommonPageSection
         class="w-full"
@@ -35,23 +35,26 @@
 
 <script setup lang="ts">
 import { useScholarshipDetail } from '~/composables/scholarship/useScholarshipDetail'
+import type { Tables } from '~/types/database.types'
 
 const route = useRoute()
+
+const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
 
 const { data: scholarship } = await useScholarshipDetail(route.params.id?.toString())
 
 const overviewFields = ref([
   {
     label: 'Deadline',
-    value: scholarship.value?.deadline,
+    value: formatDate(scholarship.value?.deadline),
   },
   {
     label: 'Award',
-    value: 'Up to $50,000',
+    value: scholarship.value?.award,
   },
   {
-    label: 'Type',
-    value: 'Scholar',
+    label: 'Tier',
+    value: scholarship.value?.tier,
   },
 ])
 </script>

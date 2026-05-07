@@ -4,7 +4,7 @@ type FormPayload = {
   title: string
   award?: string
   tier: Enums<'scholarship_tier'>
-  dead_line: string
+  deadline: string
   description?: string
   banner_img: File | null
 }
@@ -71,6 +71,7 @@ export const useScholarshipCreate = async () => {
       title: 'Scholarship Created!',
       color: 'success',
     })
+    return navigateTo(`/dashboard/admin/manage-scholarships`)
   }
   return { createScholarship, isLoading }
 }

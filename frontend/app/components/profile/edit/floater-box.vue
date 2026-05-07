@@ -72,6 +72,9 @@ const handleFileSelect = (event: Event) => {
   const target = event.target as HTMLInputElement
   if (target.files && target.files.length > 0) {
     const selectedFile = target.files[0]
+    if (tempUrl.value) {
+      URL.revokeObjectURL(tempUrl.value)
+    }
     tempUrl.value = URL.createObjectURL(selectedFile)
     imageFile.value = {
       isChanged: true,

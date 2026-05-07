@@ -366,6 +366,7 @@ export type Database = {
       }
       scholarships: {
         Row: {
+          award: string | null
           banner_url: string | null
           created_at: string
           deadline: string | null
@@ -376,6 +377,7 @@ export type Database = {
           title: string
         }
         Insert: {
+          award?: string | null
           banner_url?: string | null
           created_at?: string
           deadline?: string | null
@@ -386,6 +388,7 @@ export type Database = {
           title: string
         }
         Update: {
+          award?: string | null
           banner_url?: string | null
           created_at?: string
           deadline?: string | null
@@ -532,15 +535,12 @@ export type Database = {
       }
       scholarship_list_view: {
         Row: {
-          banner_url: string | null
           created_at: string | null
           deadline: string | null
           description: string | null
           icon_url: string | null
           id: string | null
-          organizers:
-            | Database["public"]["CompositeTypes"]["scholarship_organizers_type"][]
-            | null
+          organizers: Json | null
           tier: Database["public"]["Enums"]["scholarship_tier"] | null
           title: string | null
         }
