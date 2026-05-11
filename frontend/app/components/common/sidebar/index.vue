@@ -2,7 +2,7 @@
   <div>
     <div :class="['h-screen transition-all', sidebarOpen ? 'w-50' : 'w-20']" />
     <div :class="['fixed h-screen top-0 left-0 p-2 transition-all z-98', sidebarOpen ? 'w-50' : 'w-20']">
-      <div class="size-full bg-info-300 flex flex-col gap-6 rounded-lg items-center shadow-xl overflow-hidden">
+      <div class="size-full bg-info-300 flex flex-col gap-6 rounded-lg items-center shadow-xl relative">
         <div class="w-full px-4">
           <NuxtImg
             :src="icon"
@@ -33,28 +33,35 @@
           </div>
         </div>
         <div
-          class="mt-auto mb-2 bg-red-500 w-full cursor-pointer"
+          class="mt-auto mb-2 w-full cursor-pointer"
         >
-          <div v-if="sidebarOpen" class="relative group flex items-center justify-center">
+          <div
+            v-if="sidebarOpen"
+            class="relative group flex items-center justify-center"
+          >
             <div class="size-12 z-2 rounded-full animate-scoped-gradient bg-gradient-to-r from-info-400 via-purple-400 to-info-500 bg-[length:300%_100%] p-2 shadow-xl transition-transform duration-400 ease-out group-hover:-translate-x-[80%]">
               <UIcon
                 name="i-heroicons-sparkles-solid"
                 class="size-full"
               />
             </div>
-            <div class="absolute bg-info-500 ring-2 ring-white rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out group-hover:translate-x-[10%]">
+            <div class="absolute bg-purple-600 ring-2 ring-white rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out group-hover:translate-x-[10%]">
               <p class="text-white p-1 pl-6">
                 Assistant
               </p>
             </div>
           </div>
-          <div v-else class="mx-auto size-12 z-2 rounded-full animate-scoped-gradient bg-gradient-to-r from-info-400 via-purple-400 to-info-500 bg-[length:300%_100%] p-2 shadow-xl">
+          <div
+            v-else
+            class="mx-auto size-12 z-2 rounded-full animate-scoped-gradient bg-gradient-to-r from-info-400 via-purple-400 to-info-500 bg-[length:300%_100%] p-2 shadow-xl"
+          >
             <UIcon
               name="i-heroicons-sparkles-solid"
               class="size-full"
             />
           </div>
         </div>
+        <CommonChatbot class="bottom-0 left-[100%] mb-2 ml-2" />
       </div>
       <div
         class="group absolute h-full w-2 py-2 right-0 top-0 cursor-pointer"
