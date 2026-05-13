@@ -22,7 +22,7 @@
             @click="() => {}"
           />
         </div>
-        <div class="bg-white w-full h-80 rounded-lg p-2">
+        <div ref="messagesContainer" class="bg-white w-full h-80 rounded-lg p-2 overflow-y-auto">
           <p v-for="message in messages" :key="message.id">
             {{ message.content }}
           </p>
@@ -33,6 +33,7 @@
             type="text"
             placeholder="Enter your message..."
             class="w-full bg-white rounded-lg p-2"
+            @keydown.enter="handleAddMessage"
           >
           <UButton
             icon="i-heroicons-paper-airplane-solid"
@@ -53,11 +54,26 @@ const { chatOpen, messages, addMessage } = useChatbot()
 
 const curMessage = ref<string>('')
 
-const handleAddMessage = () => {
+const messagesContainer = ref<HTMLElement | null>(null)
+
+const scrollToBottom = async () => {
+  await nextTick()
+
+  if (messagesContainer.value) {
+    messagesContainer.value.scrollTo({
+      top: messagesContainer.value.scrollHeight,
+      behavior: 'smooth',
+    })
+  }
+}
+
+const handleAddMessage = async () => {
+  if (!chatOpen || !curMessage.value) return
   addMessage({
     role: 'user',
-    content: curMessage.value,
+    content: curMessage.value.trim(),
   })
+  await scrollToBottom()
   curMessage.value = ''
 }
 </script>
