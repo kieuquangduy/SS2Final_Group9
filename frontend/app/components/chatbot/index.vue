@@ -6,7 +6,10 @@
     leave-active-class="transition-opacity duration-300 ease-in"
     leave-to-class="opacity-0"
   >
-    <div v-if="chatOpen" class="absolute w-140 pl-4">
+    <div
+      v-if="chatOpen"
+      class="absolute w-140 pl-4"
+    >
       <div class="animate-scoped-gradient bg-gradient-to-r from-info-400 via-purple-400 to-info-500 bg-[length:300%_100%] rounded-lg w-full relative px-2 flex flex-col ring-4 ring-purple-600">
         <div class="absolute bottom-2 -left-2 size-4 bg-purple-600 rotate-45 rounded-sm -z-1" />
         <div class="h-12 flex items-center">
@@ -19,13 +22,18 @@
             variant="solid"
             class="ml-auto cursor-pointer bg-white hover:bg-neutral-200"
             :ui="{ base: 'p-0', leadingIcon: 'bg-purple-600 size-8' }"
-            @click="() => {}"
+            @click="() => { chatOpen = false }"
           />
         </div>
-        <div ref="messagesContainer" class="bg-white w-full h-80 rounded-lg p-2 overflow-y-auto">
-          <p v-for="message in messages" :key="message.id">
-            {{ message.content }}
-          </p>
+        <div
+          ref="messagesContainer"
+          class="bg-white w-full h-80 rounded-lg py-2 px-4 overflow-y-auto flex flex-col gap-4"
+        >
+          <ChatbotMessageBlock
+            v-for="message in messages"
+            :key="message.id"
+            :message="message"
+          />
         </div>
         <div class=" flex h-14 items-center gap-4">
           <input

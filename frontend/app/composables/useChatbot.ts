@@ -1,11 +1,4 @@
-export type ChatRole = 'user' | 'assistant' | 'system'
-
-export interface ChatMessage {
-  id: string
-  role: ChatRole
-  content: string
-  meta?: Record<string, any>
-}
+import type { ChatMessage } from '~/types/chatbot'
 
 export const useChatbot = () => {
   const isLoading = ref<boolean>(false)
@@ -26,7 +19,7 @@ export const useChatbot = () => {
   const addMessage = (msg: Omit<ChatMessage, 'id'>) => {
     messages.value.push({
       ...msg,
-      id: crypto.randomUUID(), // Automatically generate a safe, unique ID for Vue
+      id: crypto.randomUUID(),
     })
   }
 
