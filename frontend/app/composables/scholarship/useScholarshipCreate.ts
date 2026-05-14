@@ -20,6 +20,7 @@ export const useScholarshipCreate = async () => {
     const { banner_img, ...scholarshipData } = payload
 
     const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
+    const { ingest } = useChatbot()
 
     let bannerUrl: string | undefined
 
@@ -65,6 +66,11 @@ export const useScholarshipCreate = async () => {
       })
       return
     }
+
+    await ingest({
+      title: `Scholarship: ${scholarshipData.title}, ${scholarshipData.tier}`,
+      content: `There is a new ${scholarshipData.tier} tier scholarship called "${scholarshipData.title}". The award is ${scholarshipData.award || 'variable'}. The deadline to apply is ${scholarshipData.deadline}. Description: ${scholarshipData.description || 'No description provided.'}`,
+    })
 
     isLoading.value = false
     toast.add({

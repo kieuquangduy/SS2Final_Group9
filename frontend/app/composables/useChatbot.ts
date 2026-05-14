@@ -51,7 +51,7 @@ export const useChatbot = () => {
     }
   }
 
-  const ingest = async (form: { title: string, content: string, url: string }) => {
+  const ingest = async (form: { title: string, content: string, url?: string }) => {
     isLoading.value = true
     try {
       await $fetch('/api/gemini/ingest', {
