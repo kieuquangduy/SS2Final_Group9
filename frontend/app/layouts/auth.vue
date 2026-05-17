@@ -5,7 +5,12 @@
         <slot />
       </div>
       <div class="size-full">
-        <NuxtImg :src="banner" class="object-cover size-full" format="webp" alt="banner" />
+        <NuxtImg
+          :src="banner"
+          class="object-cover size-full"
+          format="webp"
+          alt="banner"
+        />
       </div>
     </div>
     <div class="flex md:hidden justify-center items-center h-screen">
@@ -17,5 +22,5 @@
 </template>
 
 <script setup lang="ts">
-import { banner } from '~/constants/logos';
+import { banner } from '~/constants/logos'
 </script>

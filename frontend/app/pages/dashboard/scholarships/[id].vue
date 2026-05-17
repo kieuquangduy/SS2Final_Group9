@@ -20,7 +20,10 @@
             <p>{{ field.value }}</p>
           </div>
         </div>
-        <ScholarshipDetailForm v-if="curUser?.role === 'STUDENT'" class="w-40 xl:w-full my-auto" />
+        <ScholarshipDetailForm
+          v-if="curUser?.role === 'STUDENT'"
+          class="w-40 xl:w-full my-auto"
+        />
       </CommonPageSection>
       <CommonPageSection
         class="w-full"

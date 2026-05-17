@@ -83,4 +83,8 @@ const columns: TableColumn[] = [
     header: '',
   },
 ]
+
+onMounted(() => {
+  router.push({ hash: '#applicants' })
+})
 </script>

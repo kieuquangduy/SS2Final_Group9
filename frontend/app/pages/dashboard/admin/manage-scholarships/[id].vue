@@ -1,8 +1,7 @@
 <template>
-    {{id}}
+  {{ id }}
 </template>
+
 <script setup lang="ts">
-
-const { id } = useRoute();
-
+const { id } = useRoute()
 </script>

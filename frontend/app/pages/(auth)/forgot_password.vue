@@ -1,7 +1,10 @@
 <template>
   <UForm
-class="flex flex-col gap-6 w-full px-6 xl:px-16"
-  :state="missingPasswordPayloadState" :schema="schema" @submit="handleMissingPassword">
+    class="flex flex-col gap-6 w-full px-6 xl:px-16"
+    :state="missingPasswordPayloadState"
+    :schema="schema"
+    @submit="handleMissingPassword"
+  >
     <p class="text-4xl text-info-500 font-bold text-center">
       Quên Mật Khẩu
     </p>
@@ -46,15 +49,15 @@ definePageMeta({
 
 const isLoading = ref<boolean>(false)
 
-const schema = z.object({email: z.email('Email không hợp lệ!')})
+const schema = z.object({ email: z.email('Email không hợp lệ!') })
 
 const { missingPassword } = useAuth()
 
-const handleMissingPassword = async() => {
+const handleMissingPassword = async () => {
   isLoading.value = true
   await missingPassword(missingPasswordPayloadState.value.email)
   isLoading.value = false
 }
 
-const missingPasswordPayloadState = ref({ email: ''})
+const missingPasswordPayloadState = ref({ email: '' })
 </script>

@@ -62,7 +62,6 @@
         </UFormField>
       </CommonPageSection>
 
-
       <CommonPageSection
         v-if="profile?.role === 'STUDENT'"
         title="Personal Information"
@@ -367,7 +366,8 @@ const schema = computed(() => {
         try {
           const selectedDate = parseDate(dateString)
           return selectedDate.compare(currentDay) <= 0
-        } catch {
+        }
+        catch {
           return false
         }
       }, {

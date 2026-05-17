@@ -1,59 +1,117 @@
 <template>
   <UForm
-class="flex flex-col gap-6 w-full px-6 xl:px-16 pt-10" :state="registerPayloadState" :schema="schema"
-    @submit="handleRegister">
+    class="flex flex-col gap-6 w-full px-6 xl:px-16 pt-10"
+    :state="registerPayloadState"
+    :schema="schema"
+    @submit="handleRegister"
+  >
     <p class="text-4xl text-info-500 font-bold text-center">
       Đăng Ký
     </p>
-    <UFormField label="Email" name="email" :ui="{ label: 'text-lg' }">
+    <UFormField
+      label="Email"
+      name="email"
+      :ui="{ label: 'text-lg' }"
+    >
       <UInput
-v-model="registerPayloadState.email" class="w-full" color="neutral" placeholder="Nhập email..."
-        :ui="{ base: 'bg-gray-100 h-10 text-black' }" autocomplete="email" />
+        v-model="registerPayloadState.email"
+        class="w-full"
+        color="neutral"
+        placeholder="Nhập email..."
+        :ui="{ base: 'bg-gray-100 h-10 text-black' }"
+        autocomplete="email"
+      />
     </UFormField>
-    <UFormField class="group" label="Mật Khẩu" name="password" :ui="{ label: 'text-lg' }">
+    <UFormField
+      class="group"
+      label="Mật Khẩu"
+      name="password"
+      :ui="{ label: 'text-lg' }"
+    >
       <CommonPopper>
         <UInput
-v-model="registerPayloadState.password" class="w-full" color="neutral" placeholder="Nhập mật khẩu..."
-          :ui="{ base: 'bg-gray-100 h-10 text-black' }" :type="passwordShow ? 'text' : 'password'">
+          v-model="registerPayloadState.password"
+          class="w-full"
+          color="neutral"
+          placeholder="Nhập mật khẩu..."
+          :ui="{ base: 'bg-gray-100 h-10 text-black' }"
+          :type="passwordShow ? 'text' : 'password'"
+        >
           <template #trailing>
             <UButton
-class="cursor-pointer" color="neutral" variant="link" size="sm"
+              class="cursor-pointer"
+              color="neutral"
+              variant="link"
+              size="sm"
               :icon="passwordShow ? 'i-lucide-eye-off' : 'i-lucide-eye'"
-              :aria-label="passwordShow ? 'Hide password' : 'Show password'" :aria-pressed="passwordShow"
-              aria-controls="password" @click="passwordShow = !passwordShow" />
+              :aria-label="passwordShow ? 'Hide password' : 'Show password'"
+              :aria-pressed="passwordShow"
+              aria-controls="password"
+              @click="passwordShow = !passwordShow"
+            />
           </template>
         </UInput>
         <template #content>
-          <ul style="list-style-type: disc;" class="pl-4">
-            <li v-for="req in REQS" :key="req">{{ req }}</li>
+          <ul
+            style="list-style-type: disc;"
+            class="pl-4"
+          >
+            <li
+              v-for="req in REQS"
+              :key="req"
+            >
+              {{ req }}
+            </li>
           </ul>
         </template>
       </CommonPopper>
     </UFormField>
-    <UFormField label="Xác Nhận Mật Khẩu" name="confirmPassword" :ui="{ label: 'text-lg' }">
+    <UFormField
+      label="Xác Nhận Mật Khẩu"
+      name="confirmPassword"
+      :ui="{ label: 'text-lg' }"
+    >
       <UInput
-v-model="registerPayloadState.confirmPassword" class="w-full" color="neutral"
-        placeholder="Xác nhận mật khẩu..." :ui="{ base: 'bg-gray-100 h-10 text-black' }"
-        :type="confirmPasswordShow ? 'text' : 'password'">
+        v-model="registerPayloadState.confirmPassword"
+        class="w-full"
+        color="neutral"
+        placeholder="Xác nhận mật khẩu..."
+        :ui="{ base: 'bg-gray-100 h-10 text-black' }"
+        :type="confirmPasswordShow ? 'text' : 'password'"
+      >
         <template #trailing>
           <UButton
-class="cursor-pointer" color="neutral" variant="link" size="sm"
+            class="cursor-pointer"
+            color="neutral"
+            variant="link"
+            size="sm"
             :icon="confirmPasswordShow ? 'i-lucide-eye-off' : 'i-lucide-eye'"
-            :aria-label="confirmPasswordShow ? 'Hide password' : 'Show password'" :aria-pressed="confirmPasswordShow"
-            aria-controls="confirmPassword" @click="confirmPasswordShow = !confirmPasswordShow" />
+            :aria-label="confirmPasswordShow ? 'Hide password' : 'Show password'"
+            :aria-pressed="confirmPasswordShow"
+            aria-controls="confirmPassword"
+            @click="confirmPasswordShow = !confirmPasswordShow"
+          />
         </template>
       </UInput>
     </UFormField>
     <UButton
-class="h-10 cursor-pointer" color="info" label="Đăng Ký"
-      :ui="{ label: ['mx-auto text-lg', isLoading && 'hidden'], leadingIcon: 'mx-auto' }" :loading="isLoading"
-      type="submit" />
+      class="h-10 cursor-pointer"
+      color="info"
+      label="Đăng Ký"
+      :ui="{ label: ['mx-auto text-lg', isLoading && 'hidden'], leadingIcon: 'mx-auto' }"
+      :loading="isLoading"
+      type="submit"
+    />
     <p class="text-sm mx-auto">
       Đã có tài khoản?
-      <NuxtLink to="/login" class="text-info-500 hover:text-muted">Đăng Nhập</NuxtLink>
+      <NuxtLink
+        to="/login"
+        class="text-info-500 hover:text-muted"
+      >Đăng Nhập</NuxtLink>
     </p>
   </UForm>
 </template>
+
 <script setup lang="ts">
 import { z } from 'zod'
 import { REQS } from '~/constants/passwordRequirements'
@@ -64,17 +122,16 @@ definePageMeta({
 
 const isLoading = ref<boolean>(false)
 
-const schema =
-  z.object({
+const schema
+  = z.object({
     email: z.email('Email không hợp lệ!'),
     password: z.string().min(8, 'Mật khẩu phải có ít nhất 8 kí tự!'),
-    confirmPassword: z.string()
+    confirmPassword: z.string(),
   })
-    .refine((data) => data.password === data.confirmPassword, {
+    .refine(data => data.password === data.confirmPassword, {
       message: 'Mật khẩu xác nhận không khớp với mật khẩu ban đầu!',
-      path: ['confirmPassword']
+      path: ['confirmPassword'],
     })
-
 
 const { register } = useAuth()
 
@@ -93,5 +150,4 @@ const registerPayloadState = reactive<{ email: string, password: string, confirm
 
 const passwordShow = ref<boolean>(false)
 const confirmPasswordShow = ref<boolean>(false)
-
 </script>

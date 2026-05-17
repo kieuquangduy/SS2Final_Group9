@@ -1,7 +1,10 @@
 <template>
-  <UForm 
-  class="flex flex-col gap-6 w-full px-6 xl:px-16"
-  :state="logInPayloadState" :schema="schema" @submit="handleLogIn">
+  <UForm
+    class="flex flex-col gap-6 w-full px-6 xl:px-16"
+    :state="logInPayloadState"
+    :schema="schema"
+    @submit="handleLogIn"
+  >
     <p class="text-4xl text-info-500 font-bold text-center">
       Đăng Nhập
     </p>
@@ -10,14 +13,14 @@
       name="email"
       :ui="{ label: 'text-lg' }"
     >
-        <UInput
-          v-model="logInPayloadState.email"
-          class="w-full"
-          color="neutral"
-          placeholder="Nhập email..."
-          :ui="{ base: 'bg-gray-100 h-10 text-black' }"
-          autocomplete="email"
-        />
+      <UInput
+        v-model="logInPayloadState.email"
+        class="w-full"
+        color="neutral"
+        placeholder="Nhập email..."
+        :ui="{ base: 'bg-gray-100 h-10 text-black' }"
+        autocomplete="email"
+      />
     </UFormField>
     <UFormField
       label="Mật Khẩu"
@@ -73,12 +76,11 @@
         class="text-info-500 hover:text-muted"
       >Đăng Ký</NuxtLink>
     </p>
-
   </UForm>
-
 </template>
+
 <script setup lang="ts">
-import { z } from 'zod';
+import { z } from 'zod'
 
 definePageMeta({
   layout: 'auth',
@@ -92,30 +94,29 @@ const isLoading = ref<boolean>(false)
 
 const schema = z.object({
   email: z.email('Email không hợp lệ!'),
-  password: z.string().min(1, 'Vui lòng nhập mật khẩu!')
+  password: z.string().min(1, 'Vui lòng nhập mật khẩu!'),
 })
 
 const { logIn } = useAuth()
 
 const handleLogIn = async () => {
   isLoading.value = true
-  await logIn(logInPayloadState);
+  await logIn(logInPayloadState)
   isLoading.value = false
 }
 
 const passwordShow = ref<boolean>(false)
 
-const logInPayloadState = reactive<{email: string, password: string}>({
+const logInPayloadState = reactive<{ email: string, password: string }>({
   email: '',
-  password: ''
+  password: '',
 })
 
-
-const statusKeys : Record<string, {title: string, desc: string, color: "success" | "error" }> = {
-    register_success : { title: 'Đăng ký thành công', desc: 'Vui lòng kiểm tra email để xác minh.', color: 'success'},
-    unauthorized : { title: 'Chưa được xác minh!', desc: 'Vui lòng đăng nhập để truy cập.', color: 'error' },
-    invalid_token: { title: 'Token hết hạn!', desc: 'Vui lòng đăng ký lại để nhận token mới.', color: 'error' }
-} 
+const statusKeys: Record<string, { title: string, desc: string, color: 'success' | 'error' }> = {
+  register_success: { title: 'Đăng ký thành công', desc: 'Vui lòng kiểm tra email để xác minh.', color: 'success' },
+  unauthorized: { title: 'Chưa được xác minh!', desc: 'Vui lòng đăng nhập để truy cập.', color: 'error' },
+  invalid_token: { title: 'Token hết hạn!', desc: 'Vui lòng đăng ký lại để nhận token mới.', color: 'error' },
+}
 
 onMounted(() => {
   const statusKey = statusKeys[route.query.status as string]
@@ -124,10 +125,9 @@ onMounted(() => {
     toast.add({
       title: statusKey.title,
       description: statusKey.desc,
-      color: statusKey.color
+      color: statusKey.color,
     })
     router.replace('/login')
   }
 })
-
 </script>

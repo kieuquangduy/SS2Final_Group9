@@ -1,29 +1,34 @@
 <template>
-    <div class="flex items-center justify-center min-h-screen">
-        <UCard>
-            <div class="flex flex-col items-center gap-4">
-                <UIcon name="i-heroicons-arrow-path" class="animate-spin text-4xl text-info" />
-                <p class="text-lg font-medium">Authenticating your invitation...</p>
-            </div>
-        </UCard>
-    </div>
+  <div class="flex items-center justify-center min-h-screen">
+    <UCard>
+      <div class="flex flex-col items-center gap-4">
+        <UIcon
+          name="i-heroicons-arrow-path"
+          class="animate-spin text-4xl text-info"
+        />
+        <p class="text-lg font-medium">
+          Authenticating your invitation...
+        </p>
+      </div>
+    </UCard>
+  </div>
 </template>
 
 <script setup lang="ts">
 definePageMeta({
-    layout: false,
-    middleware: undefined
+  layout: false,
+  middleware: undefined,
 })
 
 const route = useRoute()
 const supabase = useSupabaseClient()
 
 const handleCallback = async () => {
-    const hash = route.hash
+  const hash = route.hash
 
-    if (hash && hash.includes('access_token')) {
+  if (hash && hash.includes('access_token')) {
     const params = new URLSearchParams(hash.substring(1))
-    
+
     const accessToken = params.get('access_token')
     const refreshToken = params.get('refresh_token')
 
@@ -31,7 +36,7 @@ const handleCallback = async () => {
       // 4. FORCE Supabase to establish the session manually
       const { error } = await supabase.auth.setSession({
         access_token: accessToken,
-        refresh_token: refreshToken
+        refresh_token: refreshToken,
       })
 
       if (error) {
@@ -42,12 +47,13 @@ const handleCallback = async () => {
 
       return navigateTo('/reset_password')
     }
-  } else {
+  }
+  else {
     return navigateTo('/login')
   }
 }
 
 onMounted(() => {
-    handleCallback()
+  handleCallback()
 })
 </script>

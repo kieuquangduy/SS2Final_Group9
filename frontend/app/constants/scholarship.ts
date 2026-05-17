@@ -1,1 +1,1 @@
-export const scholarship_tier = ['GOLD', 'SILVER', 'VENUE'] 
+export const scholarship_tier = ['GOLD', 'SILVER', 'VENUE']
