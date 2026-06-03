@@ -1,168 +1,190 @@
 <template>
-  <UForm
-    class="flex flex-col gap-10"
-    :schema="schema"
-    :state="formState"
-    @submit="onSubmit"
-  >
-    <div class="relative flex justify-center mb-10">
-      <div class="relative w-full">
-        <img
-          v-if="!tempBanner"
-          src="/scholarshipBannerPlaceholder.png"
-          class="w-full h-100 rounded-lg object-cover shadow-xl"
-        >
-        <NuxtImg
-          v-else
-          :src="tempBanner"
-          class="w-full h-100 rounded-lg object-cover shadow-xl"
-          format="webp"
-          quality="70"
-        />
-        <input
-          ref="bannerInput"
-          type="file"
-          accept="image/*"
-          class="hidden"
-          @change="handleBannerSelect"
-        >
-        <button
-          type="button"
-          class="w-full h-100 p-0 m-0 absolute inset-0 bg-black/60 rounded-lg z-2 text-white font-bold text-center opacity-20 hover:opacity-100 hover:opacity-100 transition-opacity cursor-pointer"
-          @click="openBannerPicker"
-        >
-          Upload Banner
-        </button>
-      </div>
-      <div class="absolute -bottom-10 flex gap-26 h-30">
-        <div class="h-full w-30 relative">
+  <div>
+    <CommonPageModal
+      v-model:is-open="modalsOpen.organizerAdd"
+      title="Add Organizer"
+      title-icon="i-heroicons-users-solid"
+    >
+      <ScholarshipCreateAddOrganizerTable v-model:selected="selectedOrganizers" />
+    </CommonPageModal>
+    <UForm
+      class="flex flex-col gap-10"
+      :schema="schema"
+      :state="formState"
+      @submit="onSubmit"
+    >
+      <div class="relative flex justify-center mb-10">
+        <div class="relative w-full">
+          <img
+            v-if="!tempBanner"
+            src="/scholarshipBannerPlaceholder.png"
+            class="w-full h-100 rounded-lg object-cover shadow-xl"
+          >
           <NuxtImg
-            v-if="tempIcon"
-            :src="tempIcon"
-            class="size-full rounded-lg object-cover shadow-xl"
+            v-else
+            :src="tempBanner"
+            class="w-full h-100 rounded-lg object-cover shadow-xl"
             format="webp"
             quality="70"
           />
           <input
-            ref="iconInput"
+            ref="bannerInput"
             type="file"
             accept="image/*"
             class="hidden"
-            @change="handleIconSelect"
+            @change="handleBannerSelect"
           >
           <button
             type="button"
-            class="size-full p-0 m-0 absolute inset-0 bg-black rounded-lg z-2 text-white font-bold text-center opacity-20 hover:opacity-100 hover:opacity-100 transition-opacity cursor-pointer"
-            @click="openIconPicker"
+            class="w-full h-100 p-0 m-0 absolute inset-0 bg-black/60 rounded-lg z-2 text-white font-bold text-center opacity-20 hover:opacity-100 hover:opacity-100 transition-opacity cursor-pointer"
+            @click="openBannerPicker"
           >
-            Upload Icon
+            Upload Banner
           </button>
         </div>
-        <div class="rounded-lg shadow-xl bg-white px-8 md:px-16 py-8 z-3">
-          <UFormField name="title">
-            <UTextarea
-              v-model="formState.title"
-              :ui="{ base: 'h-16 ring-0 focus-visible:ring-0 border-neutral focus-visible:border-info border-b-2 text-info text-2xl md:text-4xl font-bold', root: 'h-max min-h-0' }"
-              placeholder="Enter Title..."
-              autoresize
+        <div class="absolute -bottom-10 flex gap-26 h-30">
+          <div class="h-full w-30 relative">
+            <NuxtImg
+              v-if="tempIcon"
+              :src="tempIcon"
+              class="size-full rounded-lg object-cover shadow-xl"
+              format="webp"
+              quality="70"
             />
-          </UFormField>
+            <input
+              ref="iconInput"
+              type="file"
+              accept="image/*"
+              class="hidden"
+              @change="handleIconSelect"
+            >
+            <button
+              type="button"
+              class="size-full p-0 m-0 absolute inset-0 bg-black rounded-lg z-2 text-white font-bold text-center opacity-20 hover:opacity-100 hover:opacity-100 transition-opacity cursor-pointer"
+              @click="openIconPicker"
+            >
+              Upload Icon
+            </button>
+          </div>
+          <div class="rounded-lg shadow-xl bg-white px-8 md:px-16 py-8 z-3">
+            <UFormField name="title">
+              <UTextarea
+                v-model="formState.title"
+                :ui="{ base: 'h-16 ring-0 focus-visible:ring-0 border-neutral focus-visible:border-info border-b-2 text-info text-2xl md:text-4xl font-bold', root: 'h-max min-h-0' }"
+                placeholder="Enter Title..."
+                autoresize
+              />
+            </UFormField>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="flex gap-10 flex-col xl:flex-row">
-      <CommonPageSection
-        class="shrink-0 w-full xl:w-50"
-        inner-class="flex flex-row xl:flex-col h-full items-start gap-8"
-      >
-        <div class="grid grid-cols-2 xl:grid-cols-1 gap-4 w-full">
-          <UFormField
-            label="Deadline"
-            name="deadline"
-            class="w-full"
-            :ui="{ label: 'font-bold' }"
-          >
-            <UPopover class="w-full h-full">
-              <UButton
-                :label="formatDate(formState.deadline)"
-                color="neutral"
-                class="bg-white hover:bg-neutral-100 text-black ring ring-inset ring-accented justify-between"
-                trailing-icon="i-heroicons-calendar-solid"
-              />
-              <template #content>
-                <UCalendar
-                  v-model="computedDate"
-                  color="neutral"
-                />
-              </template>
-            </UPopover>
-          </UFormField>
-          <UFormField
-            label="Award"
-            name="award"
-            :ui="{ label: 'font-bold' }"
-          >
-            <UInput v-model="formState.award" />
-          </UFormField>
-          <UFormField
-            label="Tier"
-            name="tier"
-            :ui="{ label: 'font-bold' }"
-          >
-            <USelect
-              v-model="formState.tier"
+      <div class="flex gap-10 flex-col xl:flex-row">
+        <CommonPageSection
+          class="shrink-0 w-full xl:w-50"
+          inner-class="flex flex-row xl:flex-col h-full items-start gap-8"
+        >
+          <div class="grid grid-cols-2 xl:grid-cols-1 gap-4 w-full">
+            <UFormField
+              label="Deadline"
+              name="deadline"
               class="w-full"
-              :items="tierOptions"
+              :ui="{ label: 'font-bold' }"
+            >
+              <UPopover class="w-full h-full">
+                <UButton
+                  :label="formatDate(formState.deadline)"
+                  color="neutral"
+                  class="bg-white hover:bg-neutral-100 text-black ring ring-inset ring-accented justify-between"
+                  trailing-icon="i-heroicons-calendar-solid"
+                />
+                <template #content>
+                  <UCalendar
+                    v-model="computedDate"
+                    color="neutral"
+                  />
+                </template>
+              </UPopover>
+            </UFormField>
+            <UFormField
+              label="Award"
+              name="award"
+              :ui="{ label: 'font-bold' }"
+            >
+              <UInput v-model="formState.award" />
+            </UFormField>
+            <UFormField
+              label="Tier"
+              name="tier"
+              :ui="{ label: 'font-bold' }"
+            >
+              <USelect
+                v-model="formState.tier"
+                class="w-full"
+                :items="tierOptions"
+              />
+            </UFormField>
+          </div>
+        </CommonPageSection>
+        <CommonPageSection
+          class="w-full"
+          title="Overview"
+          title-icon="i-heroicons-cube-solid"
+        >
+          <UFormField
+            name="description"
+            class="w-full h-full"
+          >
+            <UTextarea
+              v-model="formState.description"
+              autoresize
+              placeholder="Enter Description..."
+              class="w-full h-full"
             />
           </UFormField>
-        </div>
-      </CommonPageSection>
-      <CommonPageSection
-        class="w-full"
-        title="Overview"
-        title-icon="i-heroicons-cube-solid"
-      >
-        <UFormField
-          name="description"
-          class="w-full h-full"
+        </CommonPageSection>
+      </div>
+      <div>
+        <CommonPageSection
+          title="Organizers"
+          title-icon="i-heroicons-users-solid"
+          inner-class="grid grid-cols-4 gap-16"
         >
-          <UTextarea
-            v-model="formState.description"
-            autoresize
-            placeholder="Enter Description..."
-            class="w-full h-full"
+          <ScholarshipCreateOrganizerCard
+            v-for="organizer in selectedOrganizers"
+            :key="organizer.organizerId"
+            :organizer-id="organizer.organizerId"
           />
-        </UFormField>
-      </CommonPageSection>
-    </div>
-    <div>
-      <CommonPageSection
-        title="Organizers"
-        title-icon="i-heroicons-users-solid"
-        inner-class="grid grid-cols-3 gap-4"
-      >
-        <ScholarshipDetailOrganizerCard />
-      </CommonPageSection>
-    </div>
-    <div class="flex justify-end gap-4">
-      <UButton
-        color="neutral"
-        :to="`/dashboard/admin/manage-scholarships`"
-        size="lg"
-        label="Cancel"
-      />
-      <UButton
-        type="submit"
-        color="info"
-        class="cursor-pointer"
-        icon="i-heroicons-check"
-        size="lg"
-        label="Save"
-        :loading="isLoading"
-        :ui="{ label: ['mx-auto text-lg', isLoading && 'hidden'], leadingIcon: 'mx-auto' }"
-      />
-    </div>
-  </UForm>
+          <div
+            class="flex w-full h-full justify-center items-center border-2 border-dashed text-dimmed cursor-pointer py-2 bg-gray-100 rounded-lg"
+            @click="(() => { modalsOpen.organizerAdd = true })"
+          >
+            <UIcon name="i-heroicons-plus" />
+            <p class="pointer-events-none ml-2">
+              Add Organizer Info
+            </p>
+          </div>
+        </CommonPageSection>
+      </div>
+      <div class="flex justify-end gap-4">
+        <UButton
+          color="neutral"
+          :to="`/dashboard/admin/manage-scholarships`"
+          size="lg"
+          label="Cancel"
+        />
+        <UButton
+          type="submit"
+          color="info"
+          class="cursor-pointer"
+          icon="i-heroicons-check"
+          size="lg"
+          label="Save"
+          :loading="isLoading"
+          :ui="{ label: ['mx-auto text-lg', isLoading && 'hidden'], leadingIcon: 'mx-auto' }"
+        />
+      </div>
+    </UForm>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -170,7 +192,17 @@ import { z } from 'zod'
 import type { CalendarDate } from '@internationalized/date'
 import { getLocalTimeZone, parseDate, today } from '@internationalized/date'
 import { useScholarshipCreate } from '~/composables/scholarship/useScholarshipCreate'
-import type { Enums } from '~/types/database.types'
+import type { Enums, Tables } from '~/types/database.types'
+
+const modalsOpen = ref({
+  organizerAdd: false,
+  organizerDetail: false,
+})
+
+const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
+const selectedOrganizers = ref<{ organizerId: string, host: boolean }[]>([
+  { organizerId: curUser.value!.id!, host: true },
+])
 
 const tierOptions = [
   'GOLD',
@@ -264,6 +296,9 @@ const handleIconSelect = (event: Event) => {
 const { isLoading, createScholarship } = await useScholarshipCreate()
 
 const onSubmit = async () => {
-  createScholarship(formState)
+  createScholarship({
+    ...formState,
+    organizers: selectedOrganizers.value,
+  })
 }
 </script>

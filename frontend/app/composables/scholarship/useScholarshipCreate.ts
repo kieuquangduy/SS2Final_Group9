@@ -8,7 +8,10 @@ type FormPayload = {
   description?: string
   banner_img: File | null
   icon_img: File | null
-  organizersId: string[]
+  organizers: {
+    organizerId: string
+    host: boolean
+  }[]
 }
 
 export const useScholarshipCreate = async () => {
@@ -19,7 +22,7 @@ export const useScholarshipCreate = async () => {
   const createScholarship = async (payload: FormPayload) => {
     isLoading.value = true
 
-    const { banner_img, icon_img, organizersId, ...scholarshipData } = payload
+    const { banner_img, icon_img, organizers, ...scholarshipData } = payload
 
     const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
     const { ingest } = useChatbot()
@@ -99,9 +102,10 @@ export const useScholarshipCreate = async () => {
       return
     }
 
-    const organizerPayload = organizersId.map(organizerId => ({
+    const organizerPayload = organizers.map(organizer => ({
       scholarship_id: data.id,
-      organizer_id: organizerId,
+      organizer_id: organizer.organizerId,
+      host: organizer.host,
     }))
 
     const { error: organizerError } = await supabase

@@ -322,14 +322,17 @@ export type Database = {
       }
       "scholarship-organizers": {
         Row: {
+          host: boolean
           organizer_id: string
           scholarship_id: string
         }
         Insert: {
+          host?: boolean
           organizer_id: string
           scholarship_id: string
         }
         Update: {
+          host?: boolean
           organizer_id?: string
           scholarship_id?: string
         }
@@ -684,6 +687,7 @@ export type Database = {
         id: string | null
         username: string | null
         avatar_url: string | null
+        host: boolean | null
       }
       student_residence_type: {
         province: string | null
