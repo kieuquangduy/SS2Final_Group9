@@ -36,6 +36,7 @@
     </div>
     <div v-if="scholarship?.organizers">
       <CommonPageSection
+        v-if="scholarship.organizers.length"
         title="Organizers"
         title-icon="i-heroicons-users-solid"
         inner-class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-16 gap-y-8 w-full"

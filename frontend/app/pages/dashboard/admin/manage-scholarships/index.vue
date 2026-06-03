@@ -118,7 +118,7 @@ const deleteScholarshipId = shallowRef<string>('')
 const table = useTemplateRef('table')
 const UButton = resolveComponent('UButton')
 
-const { isLoading, isFiltering, all, own, curPage, canLoadMore, fetchPage, fetchCount } = await useScholarshipList(curUser.value!.id, curUser.value!.role!)
+const { isLoading, isFiltering, all, own, curPage, canLoadMore, fetchPage, fetchCount } = await useScholarshipList({ id: curUser.value!.id, role: curUser.value!.role! })
 const { deleteScholarship, isDeleting } = await useScholarshipDelete()
 
 const columns: TableColumn<Tables<'scholarship_list_view'>>[] = [

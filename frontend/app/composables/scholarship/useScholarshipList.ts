@@ -1,7 +1,13 @@
-import type { Enums } from '~/types/database.types'
+import type { Enums, Tables } from '~/types/database.types'
 import { TABLE_LIMIT } from '~/constants/scholarship'
 
-export const useScholarshipList = async (id?: string, role?: Enums<'profile_role'>) => {
+type ScholarshipOptions = {
+  id?: string
+  role?: Enums<'profile_role'>
+  limit?: number
+}
+
+export const useScholarshipList = async ({ id, role, limit = TABLE_LIMIT }: ScholarshipOptions = {}) => {
   const toast = useToast()
   const supabase = useSupabaseClient()
 
@@ -44,15 +50,15 @@ export const useScholarshipList = async (id?: string, role?: Enums<'profile_role
   }
 
   const canLoadMore = computed(() => {
-    const allCount = (curPage.value.all - 1) * TABLE_LIMIT
-    const filteredCount = (curPage.value.filtered - 1) * TABLE_LIMIT
+    const allCount = (curPage.value.all - 1) * limit
+    const filteredCount = (curPage.value.filtered - 1) * limit
     return { all: allCount < curPage.value.total, own: filteredCount < curPage.value.total }
   })
 
   const fetchPage = async () => {
     isLoading.value = true
-    const from = (curPage.value[isFiltering.value ? 'filtered' : 'all'] - 1) * TABLE_LIMIT
-    const to = from + TABLE_LIMIT - 1
+    const from = (curPage.value[isFiltering.value ? 'filtered' : 'all'] - 1) * limit
+    const to = from + limit - 1
     let query = supabase
       .from('scholarship_list_view')
       .select('*')
@@ -82,6 +88,12 @@ export const useScholarshipList = async (id?: string, role?: Enums<'profile_role
     return data
   }
 
+  const filterByTier = (list: Tables<'scholarship_list_view'>[], tier: string) => {
+    tier = tier.toUpperCase()
+    const filteredData = list.filter(item => item.tier === tier)
+    return filteredData
+  }
+
   const { error } = await useAsyncData(
     'scholarship-list',
     async () => {
@@ -89,7 +101,7 @@ export const useScholarshipList = async (id?: string, role?: Enums<'profile_role
       const { data } = await supabase
         .from('scholarship_list_view')
         .select('*')
-        .range(0, TABLE_LIMIT - 1)
+        .range(0, limit - 1)
         .order('created_at', { ascending: false })
       return data
     },
@@ -102,5 +114,5 @@ export const useScholarshipList = async (id?: string, role?: Enums<'profile_role
   )
   if (error.value) handleError(error.value.message)
 
-  return { isLoading, isFiltering, all, own, curPage, canLoadMore, fetchPage, fetchCount }
+  return { isLoading, isFiltering, all, own, curPage, canLoadMore, fetchPage, fetchCount, filterByTier }
 }

@@ -24,6 +24,11 @@
         :key="scholarship.id!"
         :scholarship="scholarship"
       />
+      <CommonTableTrigger
+        :on-load="fetchPage"
+        :can-load-more="canLoadMore.all"
+        :is-loading="isLoading"
+      />
     </CommonPageSection>
     <CommonPageEmpty v-else />
   </div>
@@ -35,11 +40,10 @@ import { useScholarshipList } from '~/composables/scholarship/useScholarshipList
 const route = useRoute()
 const router = useRouter()
 
-const { data, filterByTier } = await useScholarshipList()
-
+const { all, fetchPage, isLoading, canLoadMore, filterByTier } = await useScholarshipList({limit: 3}) 
 const scholarships = computed(() => {
-  if (route.hash) return filterByTier(data.value, route.hash.replace('#', '').toUpperCase())
-  return data.value
+  if (route.hash) return filterByTier(all.value, route.hash.slice(1))
+  return all.value
 })
 
 const tierOptions = ref([
