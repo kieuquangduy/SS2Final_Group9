@@ -2,7 +2,8 @@
   <div class="flex flex-col gap-10">
     <ScholarshipDetailBanner
       :banner="scholarship?.banner_url"
-      :title="scholarship?.title"
+      :icon="scholarship?.icon_url"
+      :title="scholarship?.title ?? ''"
     />
     <div class="flex gap-10 flex-col xl:flex-row">
       <CommonPageSection
@@ -31,6 +32,19 @@
         title-icon="i-heroicons-cube-solid"
       >
         <p>{{ scholarship?.description }}</p>
+      </CommonPageSection>
+    </div>
+    <div v-if="scholarship?.organizers">
+      <CommonPageSection
+        title="Organizers"
+        title-icon="i-heroicons-users-solid"
+        inner-class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-16 gap-y-8 w-full"
+      >
+        <ScholarshipDetailOrganizerCard
+          v-for="organizer in scholarship.organizers"
+          :key="organizer!.id!"
+          :organizer="organizer"
+        />
       </CommonPageSection>
     </div>
   </div>

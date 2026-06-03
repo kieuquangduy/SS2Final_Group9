@@ -1,43 +1,39 @@
 <template>
-  <div class="w-full h-full p-2 flex shadow-xl rounded-lg items-center justify-center bg-info-100">
-    <div
-      v-if="!isLoading"
-      class="flex items-center gap-2 w-full h-full"
-    >
-      <div class="shrink-0">
-        <NuxtImg
-          :src="data?.avatar_url || ''"
-          alt="Scholarship Organizer"
-          class="w-full h-30 object-cover rounded-lg"
+  <div v-if="organizer" class="w-full h-full p-2 flex gap-2 shadow-xl rounded-lg items-center justify-center bg-info-100">
+    <div class="shrink-0">
+      <NuxtImg
+        :src="organizer.avatar_url || ''"
+        alt="Scholarship Organizer"
+        class="w-full h-36 object-cover rounded-lg"
+      />
+    </div>
+    <div class="flex flex-col w-full h-full">
+      <div>
+        <ProfileRoleBadge
+          v-if="organizer.host"
+          class="mb-1"
+          role="HOST"
+          color="primary"
         />
       </div>
-      <div class="flex flex-col w-full h-full">
-        <h3>{{ data?.username }}</h3>
-        <div class="mt-auto flex flex-col">
-          <UButton
-            icon="i-heroicons-eye-solid"
-            color="info"
-            label="View"
-            class="justify-center"
-          />
-        </div>
+      <h3>{{ organizer.username }}</h3>
+      <div class="mt-auto flex flex-col">
+        <UButton
+          icon="i-heroicons-eye-solid"
+          color="info"
+          label="View"
+          class="justify-center"
+          :to="`/dashboard/${organizer?.id}`"
+        />
       </div>
     </div>
-    <UIcon
-      v-else
-      name="i-heroicons-arrow-path"
-      class="text-3xl animate-spin text-gray-500"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { useOrganizerDetail } from '~/composables/organizer/useOrganizerDetail'
+import type { Tables } from '~/types/database.types'
 
-const props = defineProps<{
-  organizerId: string
+defineProps<{
+  organizer: Tables<'organizer_list_view'> & { host: boolean } | null
 }>()
-
-const { data, isLoading, fetchOrganizerDetail } = await useOrganizerDetail()
-await fetchOrganizerDetail(props.organizerId)
 </script>

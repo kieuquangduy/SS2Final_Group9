@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-16 w-full">
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-16 gap-y-8 w-full">
     <div
       v-for="organizer in selected"
       :key="organizer.organizer.id!"
@@ -28,7 +28,7 @@
             color="info"
             label="View"
             class="justify-center"
-            @click="$router.push(`/dashboard/${organizer.organizer.id}`)"
+            :to="`/dashboard/${organizer.organizer.id}`"
           />
           <UButton
             v-if="!organizer.host "
