@@ -61,7 +61,7 @@ import type { TableColumn } from '@nuxt/ui'
 import { useOrganizerList } from '~/composables/organizer/useOrganizerList'
 import type { Tables } from '~/types/database.types'
 
-const selected = defineModel<{ organizerId: string, host: boolean }[]>('selected', {
+const selected = defineModel<{ organizer: Tables<'organizer_list_view'>, host: boolean }[]>('selected', {
   default: () => [],
 })
 
@@ -73,7 +73,7 @@ const data = computed(() => {
   if (!all.value || !all.value.data) return undefined
   return all.value.data.filter(org => {
     const isAlreadySelected = selected.value.some(
-      (selectedOrg) => selectedOrg.organizerId === org.id,
+      (selectedOrg) => selectedOrg.organizer.id === org.id,
     )
     return !isAlreadySelected
   })
@@ -123,6 +123,6 @@ const columns: TableColumn<Tables<'organizer_list_view'>>[] = [
 ]
 
 const handleAddOrganizer = (organizer: Tables<'organizer_list_view'>) => {
-  selected.value = [...selected!.value!, { organizerId: organizer.id!, host: false }]
+  selected.value = [...selected!.value!, { organizer, host: false }]
 }
 </script>

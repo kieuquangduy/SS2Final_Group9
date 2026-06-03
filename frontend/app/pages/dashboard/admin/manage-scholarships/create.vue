@@ -1,7 +1,7 @@
 <template>
   <div>
     <CommonPageModal
-      v-model:is-open="modalsOpen.organizerAdd"
+      v-model:is-open="addOrganizerOpen"
       title="Add Organizer"
       title-icon="i-heroicons-users-solid"
     >
@@ -147,22 +147,11 @@
         <CommonPageSection
           title="Organizers"
           title-icon="i-heroicons-users-solid"
-          inner-class="grid grid-cols-4 gap-16"
         >
-          <ScholarshipCreateOrganizerCard
-            v-for="organizer in selectedOrganizers"
-            :key="organizer.organizerId"
-            :organizer-id="organizer.organizerId"
+          <ScholarshipCreateOrganizerCardsController
+            v-model:selected="selectedOrganizers"
+            v-model:add-organizer-open="addOrganizerOpen"
           />
-          <div
-            class="flex w-full h-full justify-center items-center border-2 border-dashed text-dimmed cursor-pointer py-2 bg-gray-100 rounded-lg"
-            @click="(() => { modalsOpen.organizerAdd = true })"
-          >
-            <UIcon name="i-heroicons-plus" />
-            <p class="pointer-events-none ml-2">
-              Add Organizer Info
-            </p>
-          </div>
         </CommonPageSection>
       </div>
       <div class="flex justify-end gap-4">
@@ -193,15 +182,17 @@ import type { CalendarDate } from '@internationalized/date'
 import { getLocalTimeZone, parseDate, today } from '@internationalized/date'
 import { useScholarshipCreate } from '~/composables/scholarship/useScholarshipCreate'
 import type { Enums, Tables } from '~/types/database.types'
+import { useOrganizerList } from '~/composables/organizer/useOrganizerList'
 
-const modalsOpen = ref({
-  organizerAdd: false,
-  organizerDetail: false,
-})
+const addOrganizerOpen = ref<boolean>(false)
 
 const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
-const selectedOrganizers = ref<{ organizerId: string, host: boolean }[]>([
-  { organizerId: curUser.value!.id!, host: true },
+const { data } = await useOrganizerList()
+const curOrganizer = computed(() => {
+  return data.value!.data!.find(org => org.id === curUser.value?.id)
+})
+const selectedOrganizers = ref<{ organizer: Tables<'organizer_list_view'>, host: boolean }[]>([
+  { organizer: curOrganizer.value!, host: true },
 ])
 
 const tierOptions = [
@@ -296,9 +287,13 @@ const handleIconSelect = (event: Event) => {
 const { isLoading, createScholarship } = await useScholarshipCreate()
 
 const onSubmit = async () => {
+  const payload = selectedOrganizers.value.map(org => ({
+    organizerId: org.organizer.id!,
+    host: org.host,
+  }))
   createScholarship({
     ...formState,
-    organizers: selectedOrganizers.value,
+    organizers: payload,
   })
 }
 </script>

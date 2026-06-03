@@ -13,6 +13,7 @@ const props = defineProps<{
 const badgeInfo = computed(() => {
   if (props.role === 'ADMIN') return { label: 'Admin', color: 'info' }
   if (props.role === 'ORGANIZER') return { label: 'Organizer', color: 'success' }
+  if (props.role === 'HOST') return { label: 'Host', color: 'success' }
   return { label: 'Student', color: 'neutral' }
 })
 </script>
