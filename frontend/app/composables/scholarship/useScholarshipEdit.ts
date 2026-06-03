@@ -1,0 +1,166 @@
+import type { Enums, Tables } from '~/types/database.types'
+
+type FormPayload = {
+  id: string
+  title: string
+  award?: string
+  tier: Enums<'scholarship_tier'>
+  deadline: string
+  description?: string
+  banner_img: File | null
+  icon_img: File | null
+  organizers: {
+    organizerId: string
+    host: boolean
+  }[]
+}
+
+export const useScholarshipEdit = async () => {
+  const toast = useToast()
+  const supabase = useSupabaseClient()
+  const isLoading = ref<boolean>(false)
+
+  const editScholarship = async (payload: FormPayload) => {
+    isLoading.value = true
+
+    const { id, banner_img, icon_img, organizers, ...scholarshipData } = payload
+
+    const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
+    const { ingest } = useChatbot()
+
+    let bannerUrl: string | undefined
+    let iconUrl: string | undefined
+
+    if (payload.banner_img) {
+      const fileExt = payload.banner_img.name.split('.').pop()
+      const filePath = `scholarships/${curUser.value!.id}/banner-${curUser.value!.id}-${scholarshipData.tier}-${scholarshipData.title}.${fileExt}`
+
+      const { error } = await supabase
+        .storage
+        .from('public_images')
+        .upload(filePath, payload.banner_img, {
+          upsert: true,
+        })
+      if (error) {
+        toast.add({
+          title: 'Update Banner Failure',
+          description: error.message,
+          color: 'error',
+        })
+        return
+      }
+      const { data } = supabase
+        .storage
+        .from('public_images')
+        .getPublicUrl(filePath)
+
+      bannerUrl = `${data.publicUrl}?t=${Date.now()}`
+    }
+
+    if (payload.icon_img) {
+      const fileExt = payload.icon_img.name.split('.').pop()
+      const filePath = `scholarships/${curUser.value!.id}/icon-${curUser.value!.id}-${scholarshipData.tier}-${scholarshipData.title}.${fileExt}`
+
+      const { error } = await supabase
+        .storage
+        .from('public_images')
+        .upload(filePath, payload.icon_img, {
+          upsert: true,
+        })
+      if (error) {
+        toast.add({
+          title: 'Update Icon Failure',
+          description: error.message,
+          color: 'error',
+        })
+        return
+      }
+      const { data } = supabase
+        .storage
+        .from('public_images')
+        .getPublicUrl(filePath)
+
+      iconUrl = `${data.publicUrl}?t=${Date.now()}`
+    }
+
+    const { data, error } = await supabase
+      .from('scholarships')
+      .update({
+        ...scholarshipData,
+        ...(bannerUrl && { banner_url: bannerUrl }),
+        ...(iconUrl && { icon_url: iconUrl }),
+      })
+      .eq('id', payload.id)
+      .select('id')
+      .single()
+
+    if (error) {
+      isLoading.value = false
+      toast.add({
+        title: 'Error Editing Scholarship!',
+        description: error.message,
+        color: 'error',
+      })
+      return
+    }
+
+    const { error: deleteError } = await supabase
+      .from('scholarship-organizers')
+      .delete()
+      .eq('scholarship_id', id)
+
+    if (deleteError) {
+      toast.add({ title: 'Error Clearing Old Organizers', description: deleteError.message, color: 'warning' })
+    }
+    const organizerPayload = organizers.map(organizer => ({
+      scholarship_id: data.id,
+      organizer_id: organizer.organizerId,
+      host: organizer.host,
+    }))
+
+    const { error: organizerError } = await supabase
+      .from('scholarship-organizers')
+      .insert(organizerPayload)
+
+    if (organizerError) {
+      toast.add({
+        title: 'Error Assigning Organizers!',
+        description: organizerError.message,
+        color: 'error',
+      })
+    }
+
+    const { error: knowledgeError } = await supabase
+      .from('site_documentation')
+      .delete()
+      .eq('url', `/scholarships/${id}`)
+    if (deleteError || knowledgeError) {
+      toast.add({
+        title: 'Error Deleting Scholarship!',
+        description: deleteError?.message || knowledgeError?.message,
+        color: 'error',
+      })
+      return false
+    }
+
+    await ingest({
+      title: `Scholarship: ${scholarshipData.title}, ${scholarshipData.tier}`,
+      content: `There is a new ${scholarshipData.tier} tier scholarship called "${scholarshipData.title}". The award is ${scholarshipData.award || 'variable'}. The deadline to apply is ${scholarshipData.deadline}. Description: ${scholarshipData.description || 'No description provided.'}`,
+      url: `/scholarships/${data.id}`,
+    })
+
+    isLoading.value = false
+    clearNuxtData('scholarship-list')
+    clearNuxtData(`scholarship-list-${curUser.value!.id}`)
+    clearNuxtData(`scholarship-detail-${id}`)
+    const curPage = useState('scholarship-list-page')
+    curPage.value = { all: 2, filtered: 1, total: 0 }
+    toast.add({
+      title: 'Scholarship Updated!',
+      color: 'success',
+    })
+    return navigateTo(`/dashboard/admin/manage-scholarships`)
+  }
+
+  return { editScholarship, isLoading }
+}

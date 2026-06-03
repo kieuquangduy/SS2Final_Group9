@@ -201,7 +201,7 @@ const rowActions = (row: Tables<'scholarship_list_view'>) => [
   {
     label: 'Edit',
     icon: 'i-heroicons-pencil-solid',
-    to: `/dashboard/scholarships/${row.id}/edit`,
+    to: `/dashboard/admin/manage-scholarships/${row.id}`,
   },
   {
     label: 'Delete',

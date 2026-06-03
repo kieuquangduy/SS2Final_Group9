@@ -18,7 +18,7 @@ export const useScholarshipDetail = async (id?: string) => {
     scholarshipDetailKey,
     async () => {
       const { data } = await supabase
-        .from('scholarships')
+        .from('scholarship_detail_view')
         .select('*')
         .eq('id', id)
         .single()

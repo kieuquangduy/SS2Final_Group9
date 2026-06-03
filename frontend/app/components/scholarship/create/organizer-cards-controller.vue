@@ -28,7 +28,7 @@
             color="info"
             label="View"
             class="justify-center"
-            @click="$router.push(`/${organizer.organizer.id}`)"
+            @click="$router.push(`/dashboard/${organizer.organizer.id}`)"
           />
           <UButton
             v-if="!organizer.host "
