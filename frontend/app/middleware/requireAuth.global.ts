@@ -39,6 +39,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
     if (curUser.value?.role !== 'ADMIN' && curUser.value?.role !== 'ORGANIZER') {
       return navigateTo('/dashboard')
     }
+
+    if (scholarshipId === 'create') {
+      return
+    }
+
     if (curUser.value?.role === 'ORGANIZER') {
       const { data: scholarshipDetail } = await useScholarshipDetail(scholarshipId)
       if (!scholarshipDetail.value) {

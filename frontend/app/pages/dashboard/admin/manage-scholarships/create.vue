@@ -13,7 +13,7 @@
       :state="formState"
       @submit="onSubmit"
     >
-      <div class="relative flex justify-center mb-10">
+      <div class="relative flex justify-center mb-50 lg:mb-10">
         <div class="relative w-full">
           <img
             v-if="!tempBanner"
@@ -42,8 +42,8 @@
             Upload Banner
           </button>
         </div>
-        <div class="absolute -bottom-10 flex gap-26 h-30">
-          <div class="h-full w-30 relative">
+        <div class="absolute items-center -bottom-60 lg:-bottom-10 flex flex-col lg:flex-row gap-6 lg:gap-26 h-80 lg:h-30">
+          <div class="lg:h-full h-30 w-30 relative">
             <NuxtImg
               v-if="tempIcon"
               :src="tempIcon"
