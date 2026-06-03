@@ -1,6 +1,7 @@
+import { useScholarshipDetail } from '~/composables/scholarship/useScholarshipDetail'
 import type { Tables } from '~/types/database.types'
 
-export default defineNuxtRouteMiddleware((to) => {
+export default defineNuxtRouteMiddleware(async (to) => {
   const loggedIn = useSupabaseUser()
   const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
 
@@ -22,12 +23,31 @@ export default defineNuxtRouteMiddleware((to) => {
     }
   }
 
-  const editRouteMatch = to.path.match(/^\/dashboard\/([^/]+)\/edit\/?$/)
-  if (editRouteMatch) {
+  const editProfileRouteMatch = to.path.match(/^\/dashboard\/([^/]+)\/edit\/?$/)
+  if (editProfileRouteMatch) {
     if (!loggedIn.value) return navigateTo('/login?status=unauthorized')
-    const urlId = editRouteMatch[1]
+    const urlId = editProfileRouteMatch[1]
     if (curUser.value?.id !== urlId) {
       return navigateTo('/dashboard')
+    }
+  }
+
+  const editScholarshipRouteMatch = to.path.match(/^\/dashboard\/admin\/manage-scholarships\/([^/]+)\/?$/)
+  if (editScholarshipRouteMatch) {
+    if (!loggedIn.value) return navigateTo('/login?status=unauthorized')
+    const scholarshipId = editScholarshipRouteMatch[1]
+    if (curUser.value?.role !== 'ADMIN' && curUser.value?.role !== 'ORGANIZER') {
+      return navigateTo('/dashboard')
+    }
+    if (curUser.value?.role === 'ORGANIZER') {
+      const { data: scholarshipDetail } = await useScholarshipDetail(scholarshipId)
+      if (!scholarshipDetail.value) {
+        return navigateTo('/dashboard')
+      }
+      const isOrganizer = scholarshipDetail.value.organizers!.some((org) => org.id === curUser.value!.id)
+      if (!isOrganizer) {
+        return navigateTo('/dashboard')
+      }
     }
   }
 })

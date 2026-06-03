@@ -202,6 +202,7 @@ const rowActions = (row: Tables<'scholarship_list_view'>) => [
     label: 'Edit',
     icon: 'i-heroicons-pencil-solid',
     to: `/dashboard/admin/manage-scholarships/${row.id}`,
+    class: (row.organizers!.some(org => org.id === curUser.value!.id) || curUser.value!.role === 'ADMIN') ? '' : 'hidden',
   },
   {
     label: 'Delete',
@@ -211,6 +212,7 @@ const rowActions = (row: Tables<'scholarship_list_view'>) => [
       deleteScholarshipId.value = row.id!
     },
     color: 'error',
+    class: (row.organizers!.some(org => org.id === curUser.value!.id) || curUser.value!.role === 'ADMIN') ? '' : 'hidden',
   },
 ]
 
