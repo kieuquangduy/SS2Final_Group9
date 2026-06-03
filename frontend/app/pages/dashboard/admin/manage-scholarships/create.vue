@@ -203,9 +203,9 @@ const schema = z.object({
       return false
     }
   }, {
-    message: 'Deadline must be a valid date and in the future!',
+    message: 'Invalid deadline!',
   }),
-  description: z.string().max(200, 'Description must be less than 200 characters!').optional(),
+  description: z.string().min(1, 'Descriptive overview is required!').max(200, 'Description must be less than 200 characters!'),
   banner_img: z.any().optional(),
   icon_img: z.any().optional(),
 })

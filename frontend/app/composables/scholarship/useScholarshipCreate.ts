@@ -8,6 +8,7 @@ type FormPayload = {
   description?: string
   banner_img: File | null
   icon_img: File | null
+  organizersId: string[]
 }
 
 export const useScholarshipCreate = async () => {
@@ -18,7 +19,7 @@ export const useScholarshipCreate = async () => {
   const createScholarship = async (payload: FormPayload) => {
     isLoading.value = true
 
-    const { banner_img, icon_img, ...scholarshipData } = payload
+    const { banner_img, icon_img, organizersId, ...scholarshipData } = payload
 
     const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
     const { ingest } = useChatbot()
@@ -98,6 +99,23 @@ export const useScholarshipCreate = async () => {
       return
     }
 
+    const organizerPayload = organizersId.map(organizerId => ({
+      scholarship_id: data.id,
+      organizer_id: organizerId,
+    }))
+
+    const { error: organizerError } = await supabase
+      .from('scholarship-organizers')
+      .insert(organizerPayload)
+
+    if (organizerError) {
+      toast.add({
+        title: 'Error Assigning Organizers!',
+        description: organizerError.message,
+        color: 'error',
+      })
+    }
+
     await ingest({
       title: `Scholarship: ${scholarshipData.title}, ${scholarshipData.tier}`,
       content: `There is a new ${scholarshipData.tier} tier scholarship called "${scholarshipData.title}". The award is ${scholarshipData.award || 'variable'}. The deadline to apply is ${scholarshipData.deadline}. Description: ${scholarshipData.description || 'No description provided.'}`,
@@ -115,5 +133,6 @@ export const useScholarshipCreate = async () => {
     })
     return navigateTo(`/dashboard/admin/manage-scholarships`)
   }
+
   return { createScholarship, isLoading }
 }
