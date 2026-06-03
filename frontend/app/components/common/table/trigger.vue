@@ -9,7 +9,7 @@
     >
       • • •
     </p>
-    <NuxtIcon
+    <UIcon
       v-if="isLoading"
       name="i-heroicons-arrow-path"
       class="text-3xl animate-spin text-gray-500"
