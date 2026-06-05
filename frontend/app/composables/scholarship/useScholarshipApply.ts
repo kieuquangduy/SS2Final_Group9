@@ -39,9 +39,9 @@ export const useScholarshipApply = async (sid: string) => {
   }
 
   const applicationKey = computed(() => {
-    return `application-${sid}`
+    return `application-${sid}-${curUser.value!.id}`
   })
-  const isUnique = await useAsyncData(applicationKey, checkUnique)
+  const { data: canApply } = await useAsyncData(applicationKey, checkUnique)
 
   const scholarshipApply = async (payload: FormPayload) => {
     isLoading.value = true
@@ -90,7 +90,7 @@ export const useScholarshipApply = async (sid: string) => {
 
   return {
     isLoading,
-    isUnique,
+    canApply,
     scholarshipApply,
   }
 }

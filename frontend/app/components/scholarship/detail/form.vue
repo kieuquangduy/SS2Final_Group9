@@ -180,8 +180,8 @@
     <UButton
       class="justify-center cursor-pointer h-10 w-full"
       color="info"
-      :label="isUnique ? 'Already Applied' : 'Apply'"
-      :disabled="isUnique"
+      :label="canApply ? 'Apply' : 'Already Applied'"
+      :disabled="!canApply"
       @click="handleOpen"
     />
   </div>
@@ -201,11 +201,11 @@ const props = defineProps<{
   id: string
 }>()
 
-const { isLoading, isUnique, scholarshipApply } = await useScholarshipApply(props.id)
+const { isLoading, canApply, scholarshipApply } = await useScholarshipApply(props.id)
 
 const isOpen = ref<boolean>(false)
 const handleOpen = () => {
-  if (!isUnique.data.value) {
+  if (!canApply) {
     isOpen.value = false
     toastNotUnique()
     return
@@ -214,7 +214,7 @@ const handleOpen = () => {
 }
 
 const handleSubmit = async () => {
-  if (!isUnique) {
+  if (!canApply) {
     return
   }
   await scholarshipApply(formState)

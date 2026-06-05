@@ -171,6 +171,7 @@
             />
           </UFormField>
           <UFileUpload
+            v-if="!info.fileUrl"
             v-model="info.file"
             class="h-16"
             :ui="{
@@ -180,6 +181,13 @@
             highlight
             color="info"
             description="PNG, JPG, DOC, DOCX, PDF"
+          />
+          <UButton
+            v-else
+            label="View File"
+            class="h-16"
+            :to="info.fileUrl"
+            target="_blank"
           />
           <UButton
             color="error"
@@ -227,12 +235,14 @@ import { useProfileDetail } from '~/composables/profile/useProfileDetail'
 import type { Tables } from '~/types/database.types'
 import { useApplicationProfile } from '~/composables/application/useApplicationProfile'
 import { useApplicationProfileDocuments } from '~/composables/application/useApplicationProfileDocument'
+import { useApplicationDocument } from '~/composables/application/useApplicationDocument'
 
 const route = useRoute()
 const id = route.params.id as string
 
 const { data: profile } = await useProfileDetail(id)
 const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
+const { documents } = await useApplicationDocument({ studentId: curUser.value?.id })
 
 const { isLoading, updateProfile } = await useApplicationProfile()
 const { uploadDocuments } = await useApplicationProfileDocuments()
@@ -281,11 +291,18 @@ const removeContactInfo = (idx: number) => {
   formState.extracurricular_info.splice(idx, 1)
 }
 
-const selectedFiles = ref<{ fileName: string, file: File | null }[]>([])
+const selectedFiles = ref<{ fileName: string | null, file: File | null, fileUrl: string | null }[]>(
+  documents.value?.map(e => ({
+    fileName: e.display_name,
+    file: null,
+    fileUrl: e.file_url,
+  })) || [],
+)
 const addFile = () => {
   selectedFiles.value.push({
     fileName: '',
     file: null,
+    fileUrl: '',
   })
 }
 const removeFile = (idx: number) => {
@@ -294,6 +311,12 @@ const removeFile = (idx: number) => {
 
 const onSubmit = async () => {
   await updateProfile(formState)
-  await uploadDocuments(selectedFiles.value)
+  const filesPayload = selectedFiles.value.map((e) => {
+    return {
+      fileName: e.fileName!,
+      file: e.file,
+    }
+  })
+  await uploadDocuments(filesPayload)
 }
 </script>
