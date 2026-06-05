@@ -160,6 +160,64 @@
                 />
               </UFormField>
             </div>
+
+            <h2 class="text-info text-2xl">
+              Awards, Certifications & Extra"
+            </h2>
+            <div
+              class="flex flex-col gap-4"
+            >
+              <div
+                v-for="(info, idx) in selectedFiles"
+                :key="idx"
+                class="flex gap-4 w-full border-t pt-2"
+              >
+                <UFormField
+                  label="Name"
+                  class="w-full h-16"
+                >
+                  <UInput
+                    v-model="info.fileName!"
+                    class="w-full h-full"
+                    placeholder="IELTs..."
+                  />
+                </UFormField>
+                <UFileUpload
+                  v-if="!info.fileUrl"
+                  v-model="info.file"
+                  class="h-16"
+                  :ui="{
+                    base: 'h-full',
+                    description: 'text-xs',
+                  }"
+                  highlight
+                  color="info"
+                  description="PNG, JPG, DOC, DOCX, PDF"
+                />
+                <UButton
+                  v-else
+                  label="View File"
+                  class="h-16"
+                  :to="info.fileUrl"
+                  target="_blank"
+                />
+                <UButton
+                  color="error"
+                  leading-icon="i-heroicons-x-mark"
+                  class="cursor-pointer"
+                  @click="removeFile(idx)"
+                />
+              </div>
+              <div
+                class="flex w-full justify-center items-center border-2 border-dashed text-dimmed col-span-full cursor-pointer py-2 bg-gray-100 rounded-lg"
+                @click="addFile"
+              >
+                <UIcon name="i-heroicons-plus" />
+                <p class="pointer-events-none ml-2">
+                  Add File
+                </p>
+              </div>
+            </div>
             <UButton
               label="Submit"
               class="w-max ml-auto cursor-pointer"
@@ -188,6 +246,7 @@
 </template>
 
 <script setup lang="ts">
+import { useApplicationDocument } from '~/composables/application/useApplicationDocument'
 import { useProfileDetail } from '~/composables/profile/useProfileDetail'
 import { useScholarshipApply } from '~/composables/scholarship/useScholarshipApply'
 import type { Tables } from '~/types/database.types'
@@ -202,6 +261,7 @@ const props = defineProps<{
 }>()
 
 const { isLoading, canApply, scholarshipApply } = await useScholarshipApply(props.id)
+const { documents } = await useApplicationDocument({ studentId: curUser.value?.id })
 
 const isOpen = ref<boolean>(false)
 const handleOpen = () => {
@@ -217,7 +277,7 @@ const handleSubmit = async () => {
   if (!canApply) {
     return
   }
-  await scholarshipApply(formState)
+  await scholarshipApply(formState, selectedFiles.value)
   isOpen.value = false
 }
 
@@ -249,5 +309,25 @@ const addContactInfo = () => {
 }
 const removeContactInfo = (idx: number) => {
   formState.extracurricular_info.splice(idx, 1)
+}
+
+const selectedFiles = ref<{ fileName: string | null, file: File | null, fileUrl: string | null, fileId: number | null }[]>(
+  documents.value?.map(e => ({
+    fileName: e.display_name,
+    file: null,
+    fileUrl: e.file_url,
+    fileId: e.id,
+  })) || [],
+)
+const addFile = () => {
+  selectedFiles.value.push({
+    fileName: '',
+    file: null,
+    fileUrl: null,
+    fileId: null,
+  })
+}
+const removeFile = (idx: number) => {
+  selectedFiles.value.splice(idx, 1)
 }
 </script>

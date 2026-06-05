@@ -17,15 +17,27 @@ export type Database = {
       application_documents: {
         Row: {
           application_id: string
+          display_name: string | null
           document_id: number
+          document_name: string | null
+          file_type: string | null
+          file_url: string | null
         }
         Insert: {
           application_id: string
+          display_name?: string | null
           document_id: number
+          document_name?: string | null
+          file_type?: string | null
+          file_url?: string | null
         }
         Update: {
           application_id?: string
+          display_name?: string | null
           document_id?: number
+          document_name?: string | null
+          file_type?: string | null
+          file_url?: string | null
         }
         Relationships: [
           {
