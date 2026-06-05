@@ -47,6 +47,13 @@ export type Database = {
             foreignKeyName: "application_documents_application_id_fkey"
             columns: ["application_id"]
             isOneToOne: false
+            referencedRelation: "application_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "application_documents_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
             referencedRelation: "application_list_view"
             referencedColumns: ["id"]
           },
@@ -181,6 +188,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "scholarships"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "application_detail_view"
+            referencedColumns: ["applicant_id"]
           },
           {
             foreignKeyName: "applications_student_id_fkey"
@@ -513,6 +527,13 @@ export type Database = {
             foreignKeyName: "student_documents_student_id_fkey"
             columns: ["student_id"]
             isOneToOne: false
+            referencedRelation: "application_detail_view"
+            referencedColumns: ["applicant_id"]
+          },
+          {
+            foreignKeyName: "student_documents_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
             referencedRelation: "student_detail_view"
             referencedColumns: ["id"]
           },
@@ -649,6 +670,112 @@ export type Database = {
       }
     }
     Views: {
+      application_detail_view: {
+        Row: {
+          academic_info:
+            | Database["public"]["CompositeTypes"]["academic_info"]
+            | null
+          applicant_academic_info:
+            | Database["public"]["CompositeTypes"]["academic_info"]
+            | null
+          applicant_background_info:
+            | Database["public"]["CompositeTypes"]["background_info"]
+            | null
+          applicant_class: string | null
+          applicant_dob: string | null
+          applicant_extracurricular_info:
+            | Database["public"]["CompositeTypes"]["extracurricular_info"][]
+            | null
+          applicant_field_of_study: string | null
+          applicant_full_name: string | null
+          applicant_gender: Database["public"]["Enums"]["student_gender"] | null
+          applicant_id: string | null
+          applicant_residence_type:
+            | Database["public"]["CompositeTypes"]["student_residence_type"]
+            | null
+          applicant_student_code: string | null
+          applicant_university: string | null
+          background_info:
+            | Database["public"]["CompositeTypes"]["background_info"]
+            | null
+          created_at: string | null
+          extracurricular_info:
+            | Database["public"]["CompositeTypes"]["extracurricular_info"][]
+            | null
+          id: string | null
+          organizers: Json | null
+          scholarship_award: string | null
+          scholarship_banner_url: string | null
+          scholarship_deadline: string | null
+          scholarship_description: string | null
+          scholarship_icon_url: string | null
+          scholarship_id: string | null
+          scholarship_tier:
+            | Database["public"]["Enums"]["scholarship_tier"]
+            | null
+          scholarship_title: string | null
+          status: Database["public"]["Enums"]["application_status"] | null
+          student_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applications_scholarship_id_fkey"
+            columns: ["scholarship_id"]
+            isOneToOne: false
+            referencedRelation: "scholarship_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_scholarship_id_fkey"
+            columns: ["scholarship_id"]
+            isOneToOne: false
+            referencedRelation: "scholarship_list_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_scholarship_id_fkey"
+            columns: ["scholarship_id"]
+            isOneToOne: false
+            referencedRelation: "scholarships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "application_detail_view"
+            referencedColumns: ["applicant_id"]
+          },
+          {
+            foreignKeyName: "applications_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "student_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "students_id_fkey"
+            columns: ["applicant_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "students_id_fkey"
+            columns: ["applicant_id"]
+            isOneToOne: true
+            referencedRelation: "student_list_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       application_list_view: {
         Row: {
           created_at: string | null
@@ -686,6 +813,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "scholarships"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "application_detail_view"
+            referencedColumns: ["applicant_id"]
           },
           {
             foreignKeyName: "applications_student_id_fkey"
@@ -871,7 +1005,7 @@ export type Database = {
     Enums: {
       application_status:
         | "APPLIED"
-        | "REVIEWED"
+        | "REVIEWING"
         | "PENDING"
         | "DENIED"
         | "APPROVED"
@@ -1042,7 +1176,7 @@ export const Constants = {
     Enums: {
       application_status: [
         "APPLIED",
-        "REVIEWED",
+        "REVIEWING",
         "PENDING",
         "DENIED",
         "APPROVED",

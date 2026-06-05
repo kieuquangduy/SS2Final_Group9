@@ -36,13 +36,13 @@ export const useApplicationDocument = async ({ studentId, applicationId }: Fetch
         const { data, error } = await supabase
           .from('application_documents')
           // The magic of Supabase: this fetches the joined row from user_documents!
-          .select('user_documents(*)')
+          .select('student_documents(*)')
           .eq('application_id', applicationId)
 
         if (error) throw error
 
         return (data || [])
-          .map(row => row.user_documents)
+          .map(row => row.student_documents)
           .filter(doc => doc !== null) as Tables<'student_documents'>[]
       }
 

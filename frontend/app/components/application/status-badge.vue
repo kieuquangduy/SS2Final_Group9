@@ -16,6 +16,6 @@ const badgeInfo = computed(() => {
   if (props.status === 'DENIED') return { label: 'Denied', color: 'error' }
   if (props.status === 'APPROVED') return { label: 'Gold', color: 'success' }
   if (props.status === 'CONTACT') return { label: 'Contact', color: 'info' }
-  return { label: 'APPLIED', color: 'info' }
+  return { label: 'Applied', color: 'info' }
 })
 </script>
