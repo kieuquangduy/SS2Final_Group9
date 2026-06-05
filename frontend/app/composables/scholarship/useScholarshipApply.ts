@@ -11,7 +11,7 @@ export const useScholarshipApply = async (sid: string) => {
     const { data, error } = await supabase
       .from('applications')
       .select('id')
-      .eq('user_id', curUser.value!.id)
+      .eq('student_id', curUser.value!.id)
       .eq('scholarship_id', sid)
       .limit(1)
 
@@ -42,7 +42,7 @@ export const useScholarshipApply = async (sid: string) => {
         ...a,
         scholarship_id: sid,
         user_id: curUser.value!.id,
-        status: 'Applied',
+        status: 'APPLIED',
       })
 
     if (error) {

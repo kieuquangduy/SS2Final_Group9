@@ -16,50 +16,30 @@ export type Database = {
     Tables: {
       application_documents: {
         Row: {
-          application_id: number
-          created_at: string
-          file_name: string
-          file_path: string
-          file_size: number | null
-          id: number
-          mime_type: string | null
-          requirement_id: number | null
-          uploaded_by: string
-          verification_note: string | null
-          verified_by: string | null
+          application_id: string
+          document_id: number | null
         }
         Insert: {
-          application_id: number
-          created_at?: string
-          file_name: string
-          file_path: string
-          file_size?: number | null
-          id?: never
-          mime_type?: string | null
-          requirement_id?: number | null
-          uploaded_by: string
-          verification_note?: string | null
-          verified_by?: string | null
+          application_id: string
+          document_id?: number | null
         }
         Update: {
-          application_id?: number
-          created_at?: string
-          file_name?: string
-          file_path?: string
-          file_size?: number | null
-          id?: never
-          mime_type?: string | null
-          requirement_id?: number | null
-          uploaded_by?: string
-          verification_note?: string | null
-          verified_by?: string | null
+          application_id?: string
+          document_id?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "application_documents_requirement_id_fkey"
-            columns: ["requirement_id"]
+            foreignKeyName: "application_documents_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: true
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "application_documents_document_id_fkey"
+            columns: ["document_id"]
             isOneToOne: false
-            referencedRelation: "tier_requirements"
+            referencedRelation: "student_documents"
             referencedColumns: ["id"]
           },
         ]
@@ -111,21 +91,51 @@ export type Database = {
       }
       applications: {
         Row: {
+          academic_info:
+            | Database["public"]["CompositeTypes"]["academic_info"]
+            | null
+          background_info:
+            | Database["public"]["CompositeTypes"]["background_info"]
+            | null
           created_at: string
+          extracurricular_info:
+            | Database["public"]["CompositeTypes"]["extracurricular_info"]
+            | null
           id: string
           scholarship_id: string
+          status: Database["public"]["Enums"]["application_status"] | null
           student_id: string
         }
         Insert: {
+          academic_info?:
+            | Database["public"]["CompositeTypes"]["academic_info"]
+            | null
+          background_info?:
+            | Database["public"]["CompositeTypes"]["background_info"]
+            | null
           created_at?: string
+          extracurricular_info?:
+            | Database["public"]["CompositeTypes"]["extracurricular_info"]
+            | null
           id?: string
           scholarship_id: string
+          status?: Database["public"]["Enums"]["application_status"] | null
           student_id: string
         }
         Update: {
+          academic_info?:
+            | Database["public"]["CompositeTypes"]["academic_info"]
+            | null
+          background_info?:
+            | Database["public"]["CompositeTypes"]["background_info"]
+            | null
           created_at?: string
+          extracurricular_info?:
+            | Database["public"]["CompositeTypes"]["extracurricular_info"]
+            | null
           id?: string
           scholarship_id?: string
+          status?: Database["public"]["Enums"]["application_status"] | null
           student_id?: string
         }
         Relationships: [
@@ -448,10 +458,61 @@ export type Database = {
         }
         Relationships: []
       }
+      student_documents: {
+        Row: {
+          created_at: string
+          document_name: string
+          file_type: string | null
+          file_url: string
+          id: number
+          student_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          document_name?: string
+          file_type?: string | null
+          file_url?: string
+          id?: number
+          student_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          document_name?: string
+          file_type?: string | null
+          file_url?: string
+          id?: number
+          student_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_documents_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "student_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_documents_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       students: {
         Row: {
+          academic_info:
+            | Database["public"]["CompositeTypes"]["academic_info"]
+            | null
+          background_info:
+            | Database["public"]["CompositeTypes"]["background_info"]
+            | null
           class: string | null
           dob: string | null
+          extracurricular_info:
+            | Database["public"]["CompositeTypes"]["extracurricular_info"]
+            | null
           field_of_study: string | null
           full_name: string | null
           gender: Database["public"]["Enums"]["student_gender"] | null
@@ -463,8 +524,17 @@ export type Database = {
           university: string | null
         }
         Insert: {
+          academic_info?:
+            | Database["public"]["CompositeTypes"]["academic_info"]
+            | null
+          background_info?:
+            | Database["public"]["CompositeTypes"]["background_info"]
+            | null
           class?: string | null
           dob?: string | null
+          extracurricular_info?:
+            | Database["public"]["CompositeTypes"]["extracurricular_info"]
+            | null
           field_of_study?: string | null
           full_name?: string | null
           gender?: Database["public"]["Enums"]["student_gender"] | null
@@ -476,8 +546,17 @@ export type Database = {
           university?: string | null
         }
         Update: {
+          academic_info?:
+            | Database["public"]["CompositeTypes"]["academic_info"]
+            | null
+          background_info?:
+            | Database["public"]["CompositeTypes"]["background_info"]
+            | null
           class?: string | null
           dob?: string | null
+          extracurricular_info?:
+            | Database["public"]["CompositeTypes"]["extracurricular_info"]
+            | null
           field_of_study?: string | null
           full_name?: string | null
           gender?: Database["public"]["Enums"]["student_gender"] | null
@@ -702,12 +781,36 @@ export type Database = {
       }
     }
     Enums: {
+      application_status:
+        | "APPLIED"
+        | "REVIEWED"
+        | "PENDING"
+        | "DENIED"
+        | "APPROVED"
+        | "CONTACT"
       profile_contact_enum: "PHONE" | "EMAIL"
       profile_role: "STUDENT" | "ADMIN" | "ORGANIZER"
       scholarship_tier: "GOLD" | "SILVER" | "VENUE"
       student_gender: "MALE" | "FEMALE" | "OTHER"
     }
     CompositeTypes: {
+      academic_info: {
+        gpa: number | null
+        accumulated_credits: number | null
+      }
+      background_info: {
+        father_occupation: string | null
+        mother_occupation: string | null
+        family_average_income: number | null
+      }
+      club_record: {
+        club_name: string | null
+        time_active: string | null
+        role: string | null
+      }
+      extracurricular_info: {
+        clubs: Database["public"]["CompositeTypes"]["club_record"][] | null
+      }
       profile_contact_type: {
         type: Database["public"]["Enums"]["profile_contact_enum"] | null
         value: string | null
@@ -847,6 +950,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      application_status: [
+        "APPLIED",
+        "REVIEWED",
+        "PENDING",
+        "DENIED",
+        "APPROVED",
+        "CONTACT",
+      ],
       profile_contact_enum: ["PHONE", "EMAIL"],
       profile_role: ["STUDENT", "ADMIN", "ORGANIZER"],
       scholarship_tier: ["GOLD", "SILVER", "VENUE"],
