@@ -9,21 +9,18 @@ export const useApplicationDocument = async ({ studentId, applicationId }: Fetch
   const toast = useToast()
   const supabase = useSupabaseClient()
 
-  // Ensure we don't try to fetch if both are missing
   if (!studentId && !applicationId) {
     console.warn('useDocumentList requires either a studentId or an applicationId')
     return { documents: ref([]), isLoading: ref(false), fetchError: ref(null) }
   }
 
-  // Create a unique cache key depending on what we are fetching
-  const cacheKey = studentId 
-    ? `student-docs-${studentId}` 
+  const cacheKey = studentId
+    ? `student-docs-${studentId}`
     : `app-docs-${applicationId}`
 
-  const { data: documents, status, error: fetchError, refresh } = await useAsyncData<Tables<'student_documents'>[]>(
+  const { data: documents, status, error: fetchError } = await useAsyncData<Tables<'student_documents'>[]>(
     cacheKey,
     async () => {
-      // --- SCENARIO A: Fetch from the Student's Vault ---
       if (studentId) {
         const { data, error } = await supabase
           .from('student_documents')
@@ -35,7 +32,6 @@ export const useApplicationDocument = async ({ studentId, applicationId }: Fetch
         return data || []
       }
 
-      // --- SCENARIO B: Fetch from the Application Junction Table ---
       if (applicationId) {
         const { data, error } = await supabase
           .from('application_documents')
@@ -45,8 +41,6 @@ export const useApplicationDocument = async ({ studentId, applicationId }: Fetch
 
         if (error) throw error
 
-        // Supabase returns junction joins as [{ user_documents: { id: 1... } }]
-        // We map it here so the frontend just gets a flat array of documents.
         return (data || [])
           .map(row => row.user_documents)
           .filter(doc => doc !== null) as Tables<'student_documents'>[]
@@ -60,7 +54,7 @@ export const useApplicationDocument = async ({ studentId, applicationId }: Fetch
     toast.add({
       title: 'Error Fetching Documents',
       description: fetchError.value.message,
-      color: 'error'
+      color: 'error',
     })
   }
 

@@ -11,23 +11,36 @@
         </div>
       </div>
     </CommonPageSection>
-    <CommonPageSection v-if="data && data.length">
+    <CommonPageSection>
       <UTable
+        ref="table"
         :columns="columns"
-        :data="data"
+        :data="data?.data"
         class="w-full"
       >
         <template #index-cell="{ row }">
           <span class="text-gray-500 font-medium">{{ row.index + 1 }}</span>
         </template>
 
-        <template #icon-cell="{ row }">
-          <div v-if="row.original.icon">
-            <NuxtImg
-              :src="row.original.icon"
-              class="size-8"
-            />
-          </div>
+        <template #scholarship_tier-cell="{ row }">
+          <ScholarshipTierBadge :tier="row.original.scholarship_tier ?? 'venue'" />
+        </template>
+
+        <template #created_at-cell="{ row }">
+          <NuxtTime
+            v-if="row.original.created_at"
+            :datetime="row.original.created_at"
+            month="numeric"
+            day="numeric"
+            year="numeric"
+            hour="numeric"
+            minute="numeric"
+            locale="vi-VN"
+          />
+        </template>
+
+        <template #status-cell="{ row }">
+          <ApplicationStatusBadge :status="row.original.status ?? 'APPLIED'" />
         </template>
 
         <template #actions-cell="{ row }">
@@ -43,54 +56,133 @@
         </template>
       </UTable>
     </CommonPageSection>
-    <CommonPageEmpty v-else />
   </div>
 </template>
 
 <script setup lang="ts">
-import { useScholarshipList } from '~/composables/scholarship/useScholarshipList'
+import type { TableColumn } from '@nuxt/ui'
+import { useApplicationList } from '~/composables/application/useApplicationList'
 import type { Tables } from '~/types/database.types'
 
 const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail') 
 
 const router = useRouter()
 
-const sortOptions = [
-  {
-    label: 'Applicants',
-    hash: '#applicants',
-  },
-  {
-    label: 'Scholarships',
-    hash: '#scholarships',
-  },
-]
+const { data } = await useApplicationList()
 
-const { data } = await useScholarshipList()
+const table = useTemplateRef('table')
+const UButton = resolveComponent('UButton')
 
-const columns: TableColumn[] = [
+const columns: TableColumn<Tables<'application_list_view'>>[] = [
   {
     id: 'index',
     header: '#',
   },
   {
-    id: 'icon',
+    accessorKey: 'student_name',
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted()
+
+      return h(UButton, {
+        color: 'neutral',
+        variant: 'ghost',
+        label: 'Applicant',
+        icon: isSorted
+          ? isSorted === 'asc'
+            ? 'i-heroicons-bars-arrow-down'
+            : 'i-heroicons-bars-arrow-up'
+          : 'i-heroicons-arrows-up-down',
+        class: '-mx-2.5',
+        onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+      })
+    },
   },
   {
-    accessorKey: 'title',
-    header: 'Scholarship Name',
+    accessorKey: 'scholarship_title',
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted()
+
+      return h(UButton, {
+        color: 'neutral',
+        variant: 'ghost',
+        label: 'Scholarship',
+        icon: isSorted
+          ? isSorted === 'asc'
+            ? 'i-heroicons-bars-arrow-down'
+            : 'i-heroicons-bars-arrow-up'
+          : 'i-heroicons-arrows-up-down',
+        class: '-mx-2.5',
+        onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+      })
+    },
   },
   {
-    accessorKey: 'deadline',
-    header: 'Deadline',
+    accessorKey: 'scholarship_tier',
+    header: 'Tier',
+  },
+  {
+    accessorKey: 'scholarship_deadline',
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted()
+
+      return h(UButton, {
+        color: 'neutral',
+        variant: 'ghost',
+        label: 'Deadline',
+        icon: isSorted
+          ? isSorted === 'asc'
+            ? 'i-heroicons-bars-arrow-down'
+            : 'i-heroicons-bars-arrow-up'
+          : 'i-heroicons-arrows-up-down',
+        class: '-mx-2.5',
+        onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+      })
+    },
+    cell: ({ row }) => {
+      return h('p', formatDate(row.getValue('scholarship_deadline')))
+    },
+  },
+  {
+    accessorKey: 'created_at',
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted()
+
+      return h(UButton, {
+        color: 'neutral',
+        variant: 'ghost',
+        label: 'Apply Time',
+        icon: isSorted
+          ? isSorted === 'asc'
+            ? 'i-heroicons-bars-arrow-down'
+            : 'i-heroicons-bars-arrow-up'
+          : 'i-heroicons-arrows-up-down',
+        class: '-mx-2.5',
+        onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+      })
+    },
+  },
+  {
+    accessorKey: 'status',
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted()
+
+      return h(UButton, {
+        color: 'neutral',
+        variant: 'ghost',
+        label: 'Status',
+        icon: isSorted
+          ? isSorted === 'asc'
+            ? 'i-heroicons-bars-arrow-down'
+            : 'i-heroicons-bars-arrow-up'
+          : 'i-heroicons-arrows-up-down',
+        class: '-mx-2.5',
+        onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+      })
+    },
   },
   {
     id: 'actions',
     header: '',
   },
 ]
-
-onMounted(() => {
-  router.push({ hash: '#applicants' })
-})
 </script>

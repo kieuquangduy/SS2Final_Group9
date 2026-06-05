@@ -18,28 +18,38 @@ export type Database = {
         Row: {
           application_id: string
           display_name: string | null
-          document_id: number
+          document_id: number | null
           document_name: string | null
           file_type: string | null
           file_url: string | null
+          id: string
         }
         Insert: {
           application_id: string
           display_name?: string | null
-          document_id: number
+          document_id?: number | null
           document_name?: string | null
           file_type?: string | null
           file_url?: string | null
+          id?: string
         }
         Update: {
           application_id?: string
           display_name?: string | null
-          document_id?: number
+          document_id?: number | null
           document_name?: string | null
           file_type?: string | null
           file_url?: string | null
+          id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "application_documents_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "application_list_view"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "application_documents_application_id_fkey"
             columns: ["application_id"]
@@ -639,6 +649,60 @@ export type Database = {
       }
     }
     Views: {
+      application_list_view: {
+        Row: {
+          created_at: string | null
+          id: string | null
+          organizers: Json | null
+          scholarship_deadline: string | null
+          scholarship_icon_url: string | null
+          scholarship_id: string | null
+          scholarship_tier:
+            | Database["public"]["Enums"]["scholarship_tier"]
+            | null
+          scholarship_title: string | null
+          status: Database["public"]["Enums"]["application_status"] | null
+          student_id: string | null
+          student_name: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applications_scholarship_id_fkey"
+            columns: ["scholarship_id"]
+            isOneToOne: false
+            referencedRelation: "scholarship_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_scholarship_id_fkey"
+            columns: ["scholarship_id"]
+            isOneToOne: false
+            referencedRelation: "scholarship_list_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_scholarship_id_fkey"
+            columns: ["scholarship_id"]
+            isOneToOne: false
+            referencedRelation: "scholarships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "student_detail_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizer_detail_view: {
         Row: {
           avatar_url: string | null
