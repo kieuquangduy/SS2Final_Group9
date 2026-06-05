@@ -1,19 +1,27 @@
 <template>
   <div class="flex flex-col gap-10">
     <CommonPageSection title="Manage Applications">
-      <div class="flex gap-8">
-        <div class="flex items-center gap-4">
-          <CommonPageToggle
-            v-if="curUser?.role != 'STUDENT'"
-            label="Sort By"
-            :options="sortOptions"
-          />
-        </div>
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-center">
+        <UInput
+          v-model="tableFilter"
+          placeholder="Search..."
+        />
       </div>
+      <UButton
+        v-if="curUser?.role === 'STUDENT'"
+        class="ml-auto cursor-pointer"
+        leading-icon="i-heroicons-plus-circle-solid"
+        label="Manage Applicant Profile"
+        :to="`/dashboard/${curUser.id}/applicant`"
+      />
     </CommonPageSection>
-    <CommonPageSection>
+    <CommonPageSection inner-class="flex-col">
+      <p class="self-start">
+        {{ `Showing ${data?.data?.length ?? 0} / ${data?.count ?? 0} rows` }}
+      </p>
       <UTable
         ref="table"
+        v-model:global-filter="tableFilter"
         :columns="columns"
         :data="data?.data"
         class="w-full"
@@ -64,11 +72,13 @@ import type { TableColumn } from '@nuxt/ui'
 import { useApplicationList } from '~/composables/application/useApplicationList'
 import type { Tables } from '~/types/database.types'
 
-const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail') 
+const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
 
 const router = useRouter()
 
 const { data } = await useApplicationList()
+
+const tableFilter = ref<string>('')
 
 const table = useTemplateRef('table')
 const UButton = resolveComponent('UButton')
