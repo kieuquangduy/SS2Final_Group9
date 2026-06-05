@@ -24,7 +24,7 @@ export const useApplicationProfile = async () => {
         gpa: payload.gpa,
         accumulated_credits: payload.accumulated_credits,
       },
-      extracurricular_info: payload.extracurricular_info,
+      extracurricular_info: payload.extracurricular_info?.filter(row => row && row.club_name!.trim() !== '') || [],
       background_info: {
         father_occupation: payload.father_occupation,
         mother_occupation: payload.mother_occupation,
@@ -51,7 +51,6 @@ export const useApplicationProfile = async () => {
       title: 'Profile Updated',
       color: 'success',
     })
-    return navigateTo(`/dashboard/${curUser.value!.id}`)
   }
 
   return { isLoading, updateProfile }

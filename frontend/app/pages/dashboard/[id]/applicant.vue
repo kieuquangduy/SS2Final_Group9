@@ -149,6 +149,56 @@
           />
         </UFormField>
       </CommonPageSection>
+
+      <CommonPageSection
+        title="Awards, Certifications & Extra"
+        title-icon="i-heroicons-trophy-solid"
+        inner-class="flex flex-col gap-4"
+      >
+        <div
+          v-for="(info, idx) in selectedFiles"
+          :key="idx"
+          class="flex gap-4 w-full border-t pt-2"
+        >
+          <UFormField
+            label="Name"
+            class="w-full h-16"
+          >
+            <UInput
+              v-model="info.fileName!"
+              class="w-full h-full"
+              placeholder="IELTs..."
+            />
+          </UFormField>
+          <UFileUpload
+            v-model="info.file"
+            class="h-16"
+            :ui="{
+              base: 'h-full',
+              description: 'text-xs',
+            }"
+            highlight
+            color="info"
+            description="PNG, JPG, DOC, DOCX, PDF"
+          />
+          <UButton
+            color="error"
+            leading-icon="i-heroicons-x-mark"
+            class="cursor-pointer"
+            @click="removeFile(idx)"
+          />
+        </div>
+        <div
+          class="flex w-full justify-center items-center border-2 border-dashed text-dimmed col-span-full cursor-pointer py-2 bg-gray-100 rounded-lg"
+          @click="addFile"
+        >
+          <UIcon name="i-heroicons-plus" />
+          <p class="pointer-events-none ml-2">
+            Add File
+          </p>
+        </div>
+      </CommonPageSection>
+
       <div class="flex justify-end gap-4">
         <UButton
           color="neutral"
@@ -176,6 +226,7 @@ import { z } from 'zod'
 import { useProfileDetail } from '~/composables/profile/useProfileDetail'
 import type { Tables } from '~/types/database.types'
 import { useApplicationProfile } from '~/composables/application/useApplicationProfile'
+import { useApplicationProfileDocuments } from '~/composables/application/useApplicationProfileDocument'
 
 const route = useRoute()
 const id = route.params.id as string
@@ -184,6 +235,7 @@ const { data: profile } = await useProfileDetail(id)
 const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
 
 const { isLoading, updateProfile } = await useApplicationProfile()
+const { uploadDocuments } = await useApplicationProfileDocuments()
 
 const formState = reactive({
   gpa: profile.value?.academic_info?.gpa ?? 0,
@@ -229,7 +281,19 @@ const removeContactInfo = (idx: number) => {
   formState.extracurricular_info.splice(idx, 1)
 }
 
+const selectedFiles = ref<{ fileName: string, file: File | null }[]>([])
+const addFile = () => {
+  selectedFiles.value.push({
+    fileName: '',
+    file: null,
+  })
+}
+const removeFile = (idx: number) => {
+  selectedFiles.value.splice(idx, 1)
+}
+
 const onSubmit = async () => {
-  updateProfile(formState)
+  await updateProfile(formState)
+  await uploadDocuments(selectedFiles.value)
 }
 </script>

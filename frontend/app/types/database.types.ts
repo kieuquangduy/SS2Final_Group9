@@ -17,21 +17,21 @@ export type Database = {
       application_documents: {
         Row: {
           application_id: string
-          document_id: number | null
+          document_id: number
         }
         Insert: {
           application_id: string
-          document_id?: number | null
+          document_id: number
         }
         Update: {
           application_id?: string
-          document_id?: number | null
+          document_id?: number
         }
         Relationships: [
           {
             foreignKeyName: "application_documents_application_id_fkey"
             columns: ["application_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "applications"
             referencedColumns: ["id"]
           },
@@ -99,7 +99,7 @@ export type Database = {
             | null
           created_at: string
           extracurricular_info:
-            | Database["public"]["CompositeTypes"]["extracurricular_info"]
+            | Database["public"]["CompositeTypes"]["extracurricular_info"][]
             | null
           id: string
           scholarship_id: string
@@ -115,7 +115,7 @@ export type Database = {
             | null
           created_at?: string
           extracurricular_info?:
-            | Database["public"]["CompositeTypes"]["extracurricular_info"]
+            | Database["public"]["CompositeTypes"]["extracurricular_info"][]
             | null
           id?: string
           scholarship_id: string
@@ -131,7 +131,7 @@ export type Database = {
             | null
           created_at?: string
           extracurricular_info?:
-            | Database["public"]["CompositeTypes"]["extracurricular_info"]
+            | Database["public"]["CompositeTypes"]["extracurricular_info"][]
             | null
           id?: string
           scholarship_id?: string
@@ -461,6 +461,7 @@ export type Database = {
       student_documents: {
         Row: {
           created_at: string
+          display_name: string | null
           document_name: string
           file_type: string | null
           file_url: string
@@ -469,6 +470,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          display_name?: string | null
           document_name?: string
           file_type?: string | null
           file_url?: string
@@ -477,6 +479,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          display_name?: string | null
           document_name?: string
           file_type?: string | null
           file_url?: string
@@ -511,7 +514,7 @@ export type Database = {
           class: string | null
           dob: string | null
           extracurricular_info:
-            | Database["public"]["CompositeTypes"]["extracurricular_info"]
+            | Database["public"]["CompositeTypes"]["extracurricular_info"][]
             | null
           field_of_study: string | null
           full_name: string | null
@@ -533,7 +536,7 @@ export type Database = {
           class?: string | null
           dob?: string | null
           extracurricular_info?:
-            | Database["public"]["CompositeTypes"]["extracurricular_info"]
+            | Database["public"]["CompositeTypes"]["extracurricular_info"][]
             | null
           field_of_study?: string | null
           full_name?: string | null
@@ -555,7 +558,7 @@ export type Database = {
           class?: string | null
           dob?: string | null
           extracurricular_info?:
-            | Database["public"]["CompositeTypes"]["extracurricular_info"]
+            | Database["public"]["CompositeTypes"]["extracurricular_info"][]
             | null
           field_of_study?: string | null
           full_name?: string | null
@@ -711,7 +714,13 @@ export type Database = {
       }
       student_detail_view: {
         Row: {
+          academic_info:
+            | Database["public"]["CompositeTypes"]["academic_info"]
+            | null
           avatar_url: string | null
+          background_info:
+            | Database["public"]["CompositeTypes"]["background_info"]
+            | null
           bio: string | null
           class: string | null
           contact_info:
@@ -720,6 +729,9 @@ export type Database = {
           created_at: string | null
           dob: string | null
           email: string | null
+          extracurricular_info:
+            | Database["public"]["CompositeTypes"]["extracurricular_info"][]
+            | null
           field_of_study: string | null
           full_name: string | null
           gender: Database["public"]["Enums"]["student_gender"] | null
@@ -809,7 +821,9 @@ export type Database = {
         role: string | null
       }
       extracurricular_info: {
-        clubs: Database["public"]["CompositeTypes"]["club_record"][] | null
+        club_name: string | null
+        time_active: string | null
+        role: string | null
       }
       profile_contact_type: {
         type: Database["public"]["Enums"]["profile_contact_enum"] | null
