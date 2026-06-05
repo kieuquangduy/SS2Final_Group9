@@ -1,4 +1,13 @@
-import type { Tables } from '~/types/database.types'
+import type { CompositeTypes, Tables } from '~/types/database.types'
+
+type FormPayload = {
+  gpa?: CompositeTypes<'academic_info'>['gpa']
+  accumulated_credits?: CompositeTypes<'academic_info'>['accumulated_credits']
+  extracurricular_info?: CompositeTypes<'extracurricular_info'>[]
+  father_occupation: string
+  mother_occupation: string
+  family_average_income: CompositeTypes<'background_info'>['family_average_income']
+}
 
 export const useScholarshipApply = async (sid: string) => {
   const supabase = useSupabaseClient()
@@ -34,14 +43,30 @@ export const useScholarshipApply = async (sid: string) => {
   })
   const isUnique = await useAsyncData(applicationKey, checkUnique)
 
-  const scholarshipApply = async (a: Tables<'applications'>) => {
+  const scholarshipApply = async (payload: FormPayload) => {
     isLoading.value = true
+
+    const updatePayload = {
+      academic_info: {
+        gpa: payload.gpa,
+        accumulated_credits: payload.accumulated_credits,
+      },
+      extracurricular_info: payload.extracurricular_info?.filter(row => row && row.club_name!.trim() !== '') || [],
+      background_info: {
+        father_occupation: payload.father_occupation,
+        mother_occupation: payload.mother_occupation,
+        family_average_income: payload.family_average_income,
+      },
+    }
+
     const { error } = await supabase
       .from('applications')
       .insert({
-        ...a,
+        academic_info: updatePayload.academic_info,
+        extracurricular_info: updatePayload.extracurricular_info,
+        background_info: updatePayload.background_info,
         scholarship_id: sid,
-        user_id: curUser.value!.id,
+        student_id: curUser.value!.id,
         status: 'APPLIED',
       })
 

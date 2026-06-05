@@ -23,6 +23,7 @@
         </div>
         <ScholarshipDetailForm
           v-if="curUser?.role === 'STUDENT'"
+          :id="scholarshipId!"
           class="w-40 xl:w-full my-auto"
         />
       </CommonPageSection>
@@ -59,6 +60,7 @@ const route = useRoute()
 
 const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
 
+const scholarshipId = route.params.id?.toString()
 const { data: scholarship } = await useScholarshipDetail(route.params.id?.toString())
 
 const overviewFields = ref([
