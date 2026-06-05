@@ -31,6 +31,14 @@ export default defineNuxtRouteMiddleware(async (to) => {
       return navigateTo('/dashboard')
     }
   }
+  const applicantProfileRouteMatch = to.path.match(/^\/dashboard\/([^/]+)\/applicant\/?$/)
+  if (applicantProfileRouteMatch) {
+    if (!loggedIn.value) return navigateTo('/login?status=unauthorized')
+    const urlId = applicantProfileRouteMatch[1]
+    if (curUser.value?.id !== urlId) {
+      return navigateTo('/dashboard')
+    }
+  }
 
   const editScholarshipRouteMatch = to.path.match(/^\/dashboard\/admin\/manage-scholarships\/([^/]+)\/?$/)
   if (editScholarshipRouteMatch) {

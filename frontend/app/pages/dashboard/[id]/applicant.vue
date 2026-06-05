@@ -20,6 +20,7 @@
     </div>
     <UForm
       :state="formState"
+      :schema="schema"
       class="w-full flex flex-col gap-10"
       @submit="onSubmit"
     >
@@ -172,10 +173,8 @@
 
 <script lang="ts" setup>
 import { z } from 'zod'
-import type { CalendarDate } from '@internationalized/date'
-import { getLocalTimeZone, parseDate, today } from '@internationalized/date'
 import { useProfileDetail } from '~/composables/profile/useProfileDetail'
-import type { Enums, Tables } from '~/types/database.types'
+import type { Tables } from '~/types/database.types'
 import { useApplicationProfile } from '~/composables/application/useApplicationProfile'
 
 const route = useRoute()
@@ -197,7 +196,27 @@ const formState = reactive({
   family_average_income: profile.value?.background_info?.family_average_income ?? 0,
 })
 
-//const schema 
+const schema = z.object({
+  // Academic Info
+  gpa: z.number('GPA is required!')
+    .min(0, 'GPA cannot be less than 0')
+    .max(10, 'GPA cannot exceed 10'), // Assuming a 0-10 scale based on your previous UI
+
+  accumulated_credits: z.number('Credits are required!')
+    .int('Credits must be a whole number')
+    .nonnegative('Credits cannot be negative'),
+
+  father_occupation: z.string()
+    .min(2, 'Father\'s occupation must be at least 2 characters')
+    .max(50, 'Keep it under 50 characters'),
+
+  mother_occupation: z.string()
+    .min(2, 'Mother\'s occupation must be at least 2 characters')
+    .max(50, 'Keep it under 50 characters'),
+
+  family_average_income: z.number('Must be a valid number')
+    .nonnegative('Income cannot be negative'),
+})
 
 const addContactInfo = () => {
   formState.extracurricular_info.push({

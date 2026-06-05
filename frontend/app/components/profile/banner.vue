@@ -77,6 +77,13 @@ const PROFILEACTIONS: action_types[] = [
     visible: props.uid === curUser.value?.id,
   },
   {
+    label: 'Edit Applicant',
+    color: 'info',
+    variant: 'outline',
+    to: `/dashboard/${props.uid}/applicant`,
+    visible: props.uid === curUser.value?.id,
+  },
+  {
     label: 'Share',
     color: 'info',
     variant: 'solid',
