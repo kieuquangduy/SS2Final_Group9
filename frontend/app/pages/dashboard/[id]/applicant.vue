@@ -189,7 +189,7 @@ const formState = reactive({
   gpa: profile.value?.academic_info?.gpa ?? 0,
   accumulated_credits: profile.value?.academic_info?.accumulated_credits ?? 0,
 
-  extracurricular_info: curUser.value?.extracurricular_info ?? [],
+  extracurricular_info: profile.value?.extracurricular_info ?? [],
 
   father_occupation: profile.value?.background_info?.father_occupation ?? '',
   mother_occupation: profile.value?.background_info?.mother_occupation ?? '',

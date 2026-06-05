@@ -31,7 +31,7 @@ export const useApplicationProfile = async () => {
         family_average_income: payload.family_average_income,
       },
     }
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('students').update(updatePayload).eq('id', curUser.value!.id)
 
     if (error) {
@@ -44,6 +44,7 @@ export const useApplicationProfile = async () => {
       return { data: ref(null) }
     }
 
+    await refreshNuxtData(`profile-detail-${curUser.value!.id}`)
     isLoading.value = false
 
     toast.add({
@@ -51,8 +52,6 @@ export const useApplicationProfile = async () => {
       color: 'success',
     })
     return navigateTo(`/dashboard/${curUser.value!.id}`)
-
-    return { data }
   }
 
   return { isLoading, updateProfile }
