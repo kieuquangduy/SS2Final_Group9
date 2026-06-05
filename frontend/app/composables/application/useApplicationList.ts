@@ -1,6 +1,10 @@
+type filterOptions = 'Applicants' | 'Scholarships' | 'Own'
+
 export const useApplicationList = async () => {
   const supabase = useSupabaseClient()
   const toast = useToast()
+
+  const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
 
   const listByScholarship = async (sid: string) => {
     const { data, error } = await supabase

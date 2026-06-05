@@ -4,6 +4,7 @@
       <div class="flex gap-8">
         <div class="flex items-center gap-4">
           <CommonPageToggle
+            v-if="curUser?.role != 'STUDENT'"
             label="Sort By"
             :options="sortOptions"
           />
@@ -48,6 +49,9 @@
 
 <script setup lang="ts">
 import { useScholarshipList } from '~/composables/scholarship/useScholarshipList'
+import type { Tables } from '~/types/database.types'
+
+const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail') 
 
 const router = useRouter()
 
