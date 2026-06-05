@@ -19,8 +19,7 @@ export const sidebarOptions = [
   {
     name: 'Manage Applications',
     icon: 'i-heroicons-clipboard-document-solid',
-    path: '/dashboard/admin/manage-applications',
-    roles: ['ADMIN', 'ORGANIZER'],
+    path: '/dashboard/manage-applications',
   },
   {
     name: 'Manage Scholarships',

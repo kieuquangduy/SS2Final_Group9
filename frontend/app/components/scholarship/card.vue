@@ -13,7 +13,7 @@
         <ScholarshipTierBadge :tier="scholarship.tier ?? 'venue'" />
         <p class="text-dimmed">{{ scholarship.deadline }}</p>
       </div>
-      <h2 class="text-2xl text-info font-bold">{{ scholarship.title }}</h2>
+      <h2 class="text-lg lg:text-2xl text-info font-bold">{{ scholarship.title }}</h2>
       <p class="line-clamp-2">{{ scholarship.description }}</p>
       <UAvatarGroup class="mt-2">
         <UTooltip
