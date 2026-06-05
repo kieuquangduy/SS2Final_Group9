@@ -14,6 +14,23 @@
         label="Manage Applicant Profile"
         :to="`/dashboard/${curUser.id}/applicant`"
       />
+      <CommonPageModal
+        v-model:is-open="deleteApplicationOpen"
+        title="Delete Application"
+        inner-class="flex-col justify-center gap-8"
+      >
+        <p class="text-dimmed">
+          Are you sure you want to delete this application? This action cannot be undone.
+        </p>
+        <UButton
+          class="cursor-pointer"
+          label="Delete Application"
+          :ui="{ label: ['mx-auto text-lg', isDeleting && 'hidden'], leadingIcon: 'mx-auto' }"
+          :loading="isDeleting"
+          color="error"
+          @click="handleDelete(deleteApplicationId)"
+        />
+      </CommonPageModal>
     </CommonPageSection>
     <CommonPageSection inner-class="flex-col">
       <p class="self-start">
@@ -52,15 +69,16 @@
         </template>
 
         <template #actions-cell="{ row }">
-          <div class="flex justify-end">
+          <UDropdownMenu
+            :items="rowActions(row.original)"
+            class="flex justify-end"
+          >
             <UButton
-              icon="i-heroicons-eye"
+              icon="i-heroicons-bars-3"
               color="info"
-              label="Select"
-              class="cursor-pointer"
-              @click="() => { navigateTo(`manage-applications/${row.original.id}`) }"
+              variant="ghost"
             />
-          </div>
+          </UDropdownMenu>
         </template>
       </UTable>
     </CommonPageSection>
@@ -69,16 +87,19 @@
 
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
+import { useApplicationDelete } from '~/composables/application/useApplicationDelete'
 import { useApplicationList } from '~/composables/application/useApplicationList'
 import type { Tables } from '~/types/database.types'
 
 const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
 
-const router = useRouter()
-
-const { data } = await useApplicationList()
+const { data, refresh } = await useApplicationList()
+const { isDeleting, deleteApplication } = await useApplicationDelete()
 
 const tableFilter = ref<string>('')
+
+const deleteApplicationOpen = shallowRef<boolean>(false)
+const deleteApplicationId = shallowRef<string>('')
 
 const table = useTemplateRef('table')
 const UButton = resolveComponent('UButton')
@@ -193,6 +214,31 @@ const columns: TableColumn<Tables<'application_list_view'>>[] = [
   {
     id: 'actions',
     header: '',
+  },
+]
+
+const handleDelete = async (id: string) => {
+  await deleteApplication(id)
+  deleteApplicationOpen.value = false
+  deleteApplicationId.value = ''
+  await refresh()
+}
+
+const rowActions = (row: Tables<'application_list_view'>) => [
+  {
+    label: 'View',
+    icon: 'i-heroicons-eye-solid',
+    to: `/dashboard/manage-applications/${row.id}`,
+  },
+  {
+    label: 'Delete',
+    icon: 'i-heroicons-trash-solid',
+    onClick: async () => {
+      deleteApplicationOpen.value = true
+      deleteApplicationId.value = row.id!
+    },
+    color: 'error',
+    class: (row.student_id === curUser.value?.id || curUser.value!.role === 'ADMIN') ? '' : 'hidden',
   },
 ]
 </script>

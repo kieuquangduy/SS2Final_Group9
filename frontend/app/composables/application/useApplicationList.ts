@@ -5,7 +5,7 @@ export const useApplicationList = async () => {
   const toast = useToast()
   const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
 
-  const { data, error } = await useAsyncData(
+  const { data, error, refresh } = await useAsyncData(
     'application-list',
     async () => {
       let query = supabase
@@ -33,5 +33,6 @@ export const useApplicationList = async () => {
 
   return {
     data,
+    refresh,
   }
 }
