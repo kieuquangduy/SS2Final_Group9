@@ -89,12 +89,15 @@
 import type { TableColumn } from '@nuxt/ui'
 import { useApplicationDelete } from '~/composables/application/useApplicationDelete'
 import { useApplicationList } from '~/composables/application/useApplicationList'
-import type { Tables } from '~/types/database.types'
+import { useApplicationUpdate } from '~/composables/application/useApplicationUpdate'
+import { application_status } from '~/constants/application'
+import type { Enums, Tables } from '~/types/database.types'
 
 const { data: curUser } = useNuxtData<Tables<'profiles'>>('user-detail')
 
 const { data, refresh } = await useApplicationList()
 const { isDeleting, deleteApplication } = await useApplicationDelete()
+const { isUpdating, updateApplication } = await useApplicationUpdate()
 
 const tableFilter = ref<string>('')
 
@@ -224,11 +227,26 @@ const handleDelete = async (id: string) => {
   await refresh()
 }
 
+const handleStatusUpdate = async (id: string, status: Enums<'application_status'>) => {
+  await updateApplication(id, status)
+  await refresh()
+}
+
 const rowActions = (row: Tables<'application_list_view'>) => [
   {
     label: 'View',
     icon: 'i-heroicons-eye-solid',
     to: `/dashboard/manage-applications/${row.id}`,
+  },
+  {
+    label: 'Status',
+    icon: 'i-heroicons-scale-solid',
+    class: (row.student_id != curUser.value?.id) ? '' : 'hidden',
+    children:
+      application_status.map(status => ({
+        label: status,
+        onClick: async () => handleStatusUpdate(row.id!, status),
+      })),
   },
   {
     label: 'Delete',

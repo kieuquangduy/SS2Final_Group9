@@ -16,7 +16,6 @@ export const useApplicationList = async () => {
       }
       else if (curUser.value?.role === 'ORGANIZER') {
         query = query.contains('organizers', JSON.stringify([{ id: curUser.value?.id }]))
-        console.log(`running for ${curUser.value.id}`)
       }
       query = query.order('created_at', { ascending: false })
 
