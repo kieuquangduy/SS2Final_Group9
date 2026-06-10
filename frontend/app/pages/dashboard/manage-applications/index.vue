@@ -241,7 +241,7 @@ const rowActions = (row: Tables<'application_list_view'>) => [
   {
     label: 'Status',
     icon: 'i-heroicons-scale-solid',
-    class: (row.student_id != curUser.value?.id) ? '' : 'hidden',
+    class: (curUser.value?.role === 'ORGANIZER') ? '' : 'hidden',
     children:
       application_status.map(status => ({
         label: status,
@@ -256,7 +256,7 @@ const rowActions = (row: Tables<'application_list_view'>) => [
       deleteApplicationId.value = row.id!
     },
     color: 'error',
-    class: (row.student_id === curUser.value?.id || curUser.value?.role === 'ADMIN') ? '' : 'hidden',
+    class: (row.student_id === curUser.value?.id || curUser.value?.role === 'ADMIN' || curUser.value?.role === 'ORGANIZER') ? '' : 'hidden',
   },
 ]
 </script>

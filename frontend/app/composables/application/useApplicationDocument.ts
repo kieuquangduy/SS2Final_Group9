@@ -1,5 +1,3 @@
-import type { Tables } from '~/types/database.types'
-
 type FetchOptions = {
   studentId?: string
   applicationId?: string
@@ -18,10 +16,11 @@ export const useApplicationDocument = async ({ studentId, applicationId }: Fetch
     ? `student-docs-${studentId}`
     : `app-docs-${applicationId}`
 
-  const { data: documents, status, error: fetchError } = await useAsyncData<Tables<'student_documents'>[]>(
+  const { data: documents, status, error: fetchError } = await useAsyncData(
     cacheKey,
     async () => {
       if (studentId) {
+        console.log(`searching student files ${studentId}`)
         const { data, error } = await supabase
           .from('student_documents')
           .select('*')
@@ -33,17 +32,15 @@ export const useApplicationDocument = async ({ studentId, applicationId }: Fetch
       }
 
       if (applicationId) {
+        console.log(`searching applciation files ${applicationId}`)
         const { data, error } = await supabase
           .from('application_documents')
-          // The magic of Supabase: this fetches the joined row from user_documents!
-          .select('student_documents(*)')
+          .select('file_url, file_type, display_name, document_name')
           .eq('application_id', applicationId)
 
         if (error) throw error
 
-        return (data || [])
-          .map(row => row.student_documents)
-          .filter(doc => doc !== null) as Tables<'student_documents'>[]
+        return data || []
       }
 
       return []
