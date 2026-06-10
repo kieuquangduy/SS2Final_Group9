@@ -238,7 +238,7 @@ const rowActions = (row: Tables<'application_list_view'>) => [
       deleteApplicationId.value = row.id!
     },
     color: 'error',
-    class: (row.student_id === curUser.value?.id || curUser.value!.role === 'ADMIN') ? '' : 'hidden',
+    class: (row.student_id === curUser.value?.id || curUser.value?.role === 'ADMIN') ? '' : 'hidden',
   },
 ]
 </script>
