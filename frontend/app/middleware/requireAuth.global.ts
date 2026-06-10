@@ -34,6 +34,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const applicantProfileRouteMatch = to.path.match(/^\/dashboard\/([^/]+)\/applicant\/?$/)
   if (applicantProfileRouteMatch) {
     if (!loggedIn.value) return navigateTo('/login?status=unauthorized')
+    if (curUser.value?.role != 'STUDENT') {
+      return navigateTo('/dashboard')
+    }
     const urlId = applicantProfileRouteMatch[1]
     if (curUser.value?.id !== urlId) {
       return navigateTo('/dashboard')

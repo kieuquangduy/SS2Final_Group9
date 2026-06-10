@@ -81,7 +81,7 @@ const PROFILEACTIONS: action_types[] = [
     color: 'info',
     variant: 'outline',
     to: `/dashboard/${props.uid}/applicant`,
-    visible: props.uid === curUser.value?.id,
+    visible: props.uid === curUser.value?.id && curUser.value?.role == 'STUDENT',
   },
   {
     label: 'Share',
